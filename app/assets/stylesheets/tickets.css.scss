@@ -1,0 +1,23 @@
+
+.tickets {
+  tbody {
+    border-bottom: 5px solid;
+  }
+}
+
+#ticket-sidebar {
+  background: none repeat scroll 0 0;
+  height: 100%;
+  right: 250px;
+  margin-right: -250px;
+  overflow-y: auto;
+  position: fixed;
+  transition: all 0.4s ease 0s;
+  width: 250px;
+  z-index: 1000;
+  
+  table {
+    margin-bottom: 50px;
+    padding-bottom: 50px;
+  }
+}

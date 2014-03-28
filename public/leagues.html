@@ -1,0 +1,55 @@
+<div class="row" >
+
+<div class="leagues col-md-4" >
+	<table class="table table-hover">
+		<tr ng-repeat="league in leagues">
+			<td><a ng-click='viewMatches(league.id)'>{{ league.name }}</a></td>
+		</tr>
+	</table> 
+</div>
+<div class="matches col-md-8">
+	<table class="table table-hover" ng-if="matches">
+		<thead>
+	        <tr>
+	        	<th rowspan="2">Date</th>
+	        	<th rowspan="2">Player 1</th>
+	        	<th rowspan="2">Player 2</th>
+	        	
+	        	<th ng-repeat-start="(key, value) in mappings" colspan="{{value.length}}">{{key}}</th>
+	        	<th ng-repeat-end></th>
+	        		
+	        </tr>
+	        <tr>
+	        	<th ng-repeat="possible_result in possible_results">{{possible_result}}</th>
+
+	            <th>AH1</th>
+	            <th>AH2</th>
+	            <th>AH1</th>
+	            <th>AH2</th>
+	            
+	            <th>Over</th>
+	            <th>Under</th>
+	            <th>Over</th>
+	            <th>Under</th>
+	            
+	            <th>1</th>
+	            <th>X</th>
+	            <th>2</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+			<tr ng-repeat="match in matches">
+				
+				<td>{{ match.starts_at }}</td>
+				<td>{{ match.player1 }}</td>
+				<td>{{ match.player2 }}</td>
+				
+				<td ng-repeat="possible_bet in match.possible_bets">
+				  {{ possible_bet.coefficient }}
+				</td>
+		
+			</tr>
+	    <tbody>
+	</table> 
+</div>
+</div>
