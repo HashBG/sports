@@ -1,14 +1,5 @@
 @hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
-  $scope.leagues = []
   $scope.selectedBets = {}
-
-  $http.get("http://127.0.0.1:5984/leagues/_all_docs?include_docs=true").success((data) ->
-    $scope.leagues = data.rows.map (league) -> league.doc
-  ).
-  error((data, status, headers, config) ->
-    console.log(status)
-    console.log(headers)
-  )
   
   $scope.moreBetsCount = (match) ->
     i = 0
@@ -76,18 +67,13 @@
     d[1] + " v " + d[2]
   
   $scope.printCoefficient = (matchKey, ticket) ->
-    #match = $scope.matches[matchKey]
-    #if ticket.modifier?
-    #  match[ticket.betType][ticket.modifier][ticket.betResult]
-    #else
-    #  match[ticket.betType][ticket.betResult]
     ticket.coefficient
   
-  $scope.printTicketCoefficientSum = () ->
-    s = 0.0
+  $scope.printTicketCoefficientTotal = () ->
+    s = 1.0
     for ticketId, ticket of $scope.selectedBets
-      s += parseFloat(ticket.coefficient)
-    if s == 0.0
+      s = s * parseFloat(ticket.coefficient)
+    if s == 1.0
       ""
     else
       s.toFixed(2)

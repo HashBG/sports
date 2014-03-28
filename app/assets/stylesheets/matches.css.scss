@@ -1,8 +1,18 @@
+.matches {
+  .btn-sm, .btn-group-sm > .btn {
+    padding: 0px 5px;
+  }
+}
 
 .bet-details {
   th:nth-child(1){
     width:180px;
   }
+  
+  th {
+    padding: 0px !important;
+  }
+  
   tr > td {
     font-size: 12px;
     padding: 0px !important;

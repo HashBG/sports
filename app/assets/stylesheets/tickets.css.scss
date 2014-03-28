@@ -15,9 +15,13 @@
   transition: all 0.4s ease 0s;
   width: 250px;
   z-index: 1000;
+  padding-left: 0px;
+  padding-right: 0px;
+  // fix for overlapping sidebar making bet un-clickable
+  pointer-events: none;
   
   table {
     margin-bottom: 50px;
-    padding-bottom: 50px;
+    pointer-events: all;
   }
 }

@@ -1,8 +1,13 @@
-@hashbg_sports.controller 'MatchesCtrl', ['$scope', '$location', '$http', '$routeParams', ($scope, $location, $http, $routeParams) ->
-  console.log("changes! " + $routeParams.league_name)
+@hashbg_sports.controller 'MatchesCtrl', ['$scope', '$location', '$http', '$routeParams', '$q', '$rootScope', '$timeout', ($scope, $location, $http, $routeParams, $q, $rootScope, $timeout) ->
   $scope.currentDb = $routeParams.league_name
   $scope.lastSeq = null
   $scope.currentDb = null
+  
+  if $scope.$parent.canceler
+    canceler = $scope.$parent.canceler
+    $timeout(() ->
+      canceler.resolve("League to follow changed")
+    )
   
   $scope.currentLeague = () ->
     $routeParams.league_name
@@ -36,8 +41,10 @@
     params = "feed=longpoll"
     if $scope.lastSeq
       params = params + "&since="+ $scope.lastSeq + "&include_docs=true"
+  
+    $scope.$parent.canceler = $q.defer();
 
-    $http.get("http://127.0.0.1:5984/"+db_name+"/_changes?" + params).success((data) ->
+    $http.get("http://127.0.0.1:5984/"+db_name+"/_changes?" + params, timeout: $scope.$parent.canceler.promise).success((data) ->
       if $scope.currentLeague() == db_name
         if $scope.lastSeq
           for result in data.results
@@ -46,5 +53,8 @@
               $scope.setDetails result.doc
         $scope.lastSeq = data.last_seq
         $scope.pollMatches(db_name)
+    ).
+    error((err) ->
+      # check if aborted
     )
 ]

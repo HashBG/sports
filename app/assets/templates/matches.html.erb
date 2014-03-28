@@ -1,98 +1,100 @@
-	<table class="table table-hover" ng-if="matches">
-		<thead>
-			<tr>
-				<th>Date</th>
-				<th>Match</th>
-				<th>1</th>
-				<th>X</th>
-				<th>2</th>
-				<th>more</th>
-			</tr>
-		</thead>
-		<tbody ng-repeat="(matchKey, match) in matches">
-			<tr>
-				<td>{{ printMatchDate(match._id) }}</td>
-				<td>{{ printMatch(match._id) }}</td>
-				<% ["1", "X", "2"].each do |bet_result| %>
-				<td><%= coefficient_button("match", "Full1X2", bet_result) %></td>
-				<% end %>
-				<td>
-				<button ng-click='toggleDetails(matchKey, match)' class="btn btn-default btn-sm ng-binding" type="button">
-					{{ moreBetsCount(match) }}
-				</button></td>
-			</tr>
-			<tr ng-if="detailsFor == matchKey" ng-repeat="(betType, detail) in details">
-				<td colspan="5" class="bet-details">
-				<table class="table" ng-if="betType === 'Full1X2 Handicap'">
-					<thead>
-						<tr>
-							<th></th>
-							<th>1</th>
-							<th>X</th>
-							<th>2</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="(modifier, odds) in detail">
-							<td>{{ betType }} / {{modifier}}</td>
-							<% ["1", "X", "2"].each do |bet_result| %>
-							<td><%= coefficient_button("match", "Full1X2 Handicap", bet_result, "modifier") %></td>
-							<% end %>
-						</tr>
-					</tbody>
-				</table>
-				<table class="table" ng-if="betType === 'FullAH'">
-					<thead>
-						<tr>
-							<th></th>
-							<th>AH1</th>
-							<th>AH2</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="(modifier, odds) in detail">
-							<td>{{ betType }} / {{modifier}}</td>
-							<% ["AH1", "AH2"].each do |bet_result| %>
-							<td><%= coefficient_button("match", "FullAH", bet_result, "modifier") %></td>
-							<% end %>
-						</tr>
-					</tbody>
-				</table>
-				<table class="table" ng-if="betType === 'FullDoubleChance'">
-					<thead>
-						<tr>
-							<th></th>
-							<th>12</th>
-							<th>1X</th>
-							<th>X2</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>{{ betType }}</td>
-							<% ["12", "1X", "X2"].each do |bet_result| %>
-							<td><%= coefficient_button("match", "FullDoubleChance", bet_result) %></td>
-							<% end %>
-						</tr>
-					</tbody>
-				</table>
-				<table class="table" ng-if="betType === 'FullOver/Under'">
-					<thead>
-						<tr>
-							<th></th>
-							<th>Over</th>
-							<th>Under</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="(modifier, odds) in detail">
-							<td>{{ betType }} / {{modifier}}</td>
-							<% ["Over", "Under"].each do |bet_result| %>
-							<td><%= coefficient_button("match", "FullOver/Under", bet_result, "modifier") %></td>
-							<% end %>
-						</tr>
-					</tbody>
-				</table></td>
-			</tr>
-		</tbody>
-	</table>
+<table class="table table-hover" ng-if="matches">
+	<thead>
+		<tr>
+			<th>Date</th>
+			<th>Match</th>
+			<th>1</th>
+			<th>X</th>
+			<th>2</th>
+			<th>more</th>
+		</tr>
+	</thead>
+	<tbody ng-repeat="(matchKey, match) in matches">
+		<tr>
+			<td>{{ printMatchDate(match._id) }}</td>
+			<td>{{ printMatch(match._id) }}</td>
+			<% ["1", "X", "2"].each do |bet_result| %>
+			<td><%= coefficient_button("match", "Full1X2", bet_result) %></td>
+			<% end %>
+			<td>
+			<button ng-click='toggleDetails(matchKey, match)' class="btn btn-default btn-sm ng-binding" type="button">
+				{{ moreBetsCount(match) }}
+				<i class="glyphicon glyphicon-plus" ng-if="detailsFor != matchKey"></i>
+				<i class="glyphicon glyphicon-minus" ng-if="detailsFor == matchKey"></i>
+			</button></td>
+		</tr>
+		<tr ng-if="detailsFor == matchKey" ng-repeat="(betType, detail) in details">
+			<td colspan="6" class="bet-details">
+			<table class="table" ng-if="betType === 'Full1X2 Handicap'">
+				<thead>
+					<tr>
+						<th></th>
+						<th>1</th>
+						<th>X</th>
+						<th>2</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(modifier, odds) in detail">
+						<td>{{ betType }} / {{modifier}}</td>
+						<% ["1", "X", "2"].each do |bet_result| %>
+						<td><%= coefficient_button("match", "Full1X2 Handicap", bet_result, "modifier") %></td>
+						<% end %>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table" ng-if="betType === 'FullAH'">
+				<thead>
+					<tr>
+						<th></th>
+						<th>AH1</th>
+						<th>AH2</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(modifier, odds) in detail">
+						<td>{{ betType }} / {{modifier}}</td>
+						<% ["AH1", "AH2"].each do |bet_result| %>
+						<td><%= coefficient_button("match", "FullAH", bet_result, "modifier") %></td>
+						<% end %>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table" ng-if="betType === 'FullDoubleChance'">
+				<thead>
+					<tr>
+						<th></th>
+						<th>12</th>
+						<th>1X</th>
+						<th>X2</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{{ betType }}</td>
+						<% ["12", "1X", "X2"].each do |bet_result| %>
+						<td><%= coefficient_button("match", "FullDoubleChance", bet_result) %></td>
+						<% end %>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table" ng-if="betType === 'FullOver/Under'">
+				<thead>
+					<tr>
+						<th></th>
+						<th>Over</th>
+						<th>Under</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="(modifier, odds) in detail">
+						<td>{{ betType }} / {{modifier}}</td>
+						<% ["Over", "Under"].each do |bet_result| %>
+						<td><%= coefficient_button("match", "FullOver/Under", bet_result, "modifier") %></td>
+						<% end %>
+					</tr>
+				</tbody>
+			</table></td>
+		</tr>
+	</tbody>
+</table>

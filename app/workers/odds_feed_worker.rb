@@ -31,6 +31,7 @@ class OddsFeedWorker
   
   def load_odds_feed
     odds_feed = {}
+    leagues_feed = {}
 
     feed = JSON.parse(File.read('db/fixtures/OddsFeed.json'))
     # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
@@ -39,11 +40,12 @@ class OddsFeedWorker
         country_scopes.each do |country_scope, leagues|
           leagues.each do |league_name, matches|
             odds_feed[league_name] = matches
+            leagues_feed[league_name] = {"country" => country_scope}
           end
         end
       end
     end
-    odds_feed
+    [odds_feed, leagues_feed]
   end
   
   def load_current_leagues
@@ -117,10 +119,6 @@ class OddsFeedWorker
         db.save_doc new_doc 
       end
     end
-    
-  rescue => e
-    debugger
-    puts
   end
   
   def build_league_doc(league_name, db_name)
@@ -128,18 +126,32 @@ class OddsFeedWorker
   end
   
   def perform
-    oddsFeed = load_odds_feed
+    odds_feed, leagues_feed = load_odds_feed
     
     leagues_db = CouchRest.database!(couch_host("leagues"))
-    leagues = leagues_db.all_docs["rows"].map{|doc| doc["id"]}
+    leagues = leagues_db.all_docs["rows"]
         
-    oddsFeed.each do |league_name, matches|
+    odds_feed.each do |league_name, matches|
       db_name = league_name.gsub(/[\ \.]/,"_").underscore
       update_matches(db_name, matches)
-      unless leagues.include? league_name
-        leagues_db.save_doc build_league_doc(league_name, db_name)
+      
+      league_from_feed = leagues_feed[league_name]
+      league_from_feed["db_name"] = db_name
+      stored_league = leagues.select{|l| l["id"] == league_name}[0  ]
+      if stored_league
+        league_from_feed["_rev"] = stored_league["value"]["rev"]
+      else
+        stored_league = league_from_feed
       end
+      league_from_feed["_id"] = league_name
+      
+      leagues_db.save_doc league_from_feed 
+      
+      #unless leagues.include? league_name
+      #  leagues_db.save_doc build_league_doc(league_name, db_name)
+      #end
     end
   end
 
 end
+

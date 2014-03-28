@@ -1,12 +1,23 @@
-
-<table class="table table-hover">
-	<tr ng-repeat="league in leagues">
-		<!--
-		<td><a ng-click='viewMatches(league.db_name)'>{{ league._id }}</a></td>
-		-->
-		<td>
-			<a ng-href='#/leagues/{{ league.db_name }}'>{{ league._id }}</a>
-		</td>
-		
-	</tr>
+<table class="table table-condensed">
+	<tbody ng-repeat="(country, leagues) in leaguesMap">
+		<tr ng-click="expand(country)">
+			<td>{{ country }}
+				<i class="glyphicon glyphicon-chevron-down" ng-if="country != expanded"></i>
+				<i class="glyphicon glyphicon-minus" ng-if="country == expanded"></i>
+			</td>
+		</tr>
+		<tr ng-show="country == expanded">
+			<td>
+				<table class="table table-condensed">
+				  	<tbody class="well">
+				  		<tr ng-repeat="league in leagues">
+				  			<td>
+						  		<a ng-href='#/leagues/{{ league.db_name }}'>{{ league._id }}</a>
+				  			</td>
+				  		</tr>
+			  		</tbody>
+		  		</table>
+			</td>
+		</tr>
+	</tbody>
 </table>

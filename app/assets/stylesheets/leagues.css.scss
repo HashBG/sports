@@ -1,5 +1,27 @@
-.matches {
-  .btn-sm, .btn-group-sm > .btn {
-    padding: 0px 5px;
+.well.leagues {
+  padding: 0px;
+  tr:hover {
+    background-color: #FFFFFF;
+  }
+  i {
+    float: right;
+  }
+  table {
+    margin-bottom: 0px;
+  }
+  
+  .ng-hide-add, .ng-hide-remove {
+    -webkit-transition:all linear 1.0s;
+    -moz-transition:all linear 1.0s;
+    -o-transition:all linear 1.0s;
+    transition:all linear 1.0s;
+  }
+  
+  .ng-hide-add, .ng-hide-remove {
+    -webkit-transition:all linear 0.5s;
+    -moz-transition:all linear 0.5s;
+    -o-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+    display:block!important;
   }
 }
