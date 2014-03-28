@@ -1,0 +1,12 @@
+
+<table class="table table-hover">
+	<tr ng-repeat="league in leagues">
+		<!--
+		<td><a ng-click='viewMatches(league.db_name)'>{{ league._id }}</a></td>
+		-->
+		<td>
+			<a ng-href='#/leagues/{{ league.db_name }}'>{{ league._id }}</a>
+		</td>
+		
+	</tr>
+</table>

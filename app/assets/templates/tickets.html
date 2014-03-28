@@ -1,0 +1,25 @@
+
+<table class="table table-condensed" ng-show="showTickets()">
+	<tbody class="well" ng-repeat="(ticketKey, ticket) in selectedBets">
+		<tr>
+			<td>{{ printMatchDate(ticketKey) }}</td>
+			<td>
+			<button ng-click='removeBet(ticketKey)' class="btn btn-default btn-xs ng-binding" type="button">
+				x
+			</button></td>
+		</tr>
+		<tr>
+			<td colspan="2">{{ printMatch(ticketKey) }}</td>
+		</tr>
+		<tr>
+			<td>{{ printTicket(ticket) }}</td>
+			<td>{{ printCoefficient(ticketKey, ticket) }}</td>
+		</tr>
+	</tbody>
+	<tbody class="well coefficient-sum">
+		<tr>
+			<td>sum: </td>
+			<td>{{ printTicketCoefficientSum() }}</td>
+		</tr>
+	</tbody>
+</table>
