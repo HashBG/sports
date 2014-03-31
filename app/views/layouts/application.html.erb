@@ -6,15 +6,29 @@
 		<%= javascript_include_tag "application" %>
 		<%= csrf_meta_tags %>
 	</head>
-	<body>
+	<body ng-controller="HomeCtrl">
 
 		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-			<div class="container">
-				...
+			<div class="container-fluid">
+			  
+				<ul class="nav navbar-nav navbar-right">
+	        <li class="dropdown">
+	          <a class="dropdown-toggle" data-toggle="dropdown">{{ oddsRepresentation }}<b class="caret"></b></a>
+	          <ul class="dropdown-menu">
+	            <li><a ng-click="switchOddsRepresentation('decimal')">decimal</a></li>
+	            <li><a ng-click="switchOddsRepresentation('uk')">uk</a></li>
+	            <li><a ng-click="switchOddsRepresentation('us')">us</a></li>
+	            <!--
+	            <li class="divider"></li>
+	            <li><a href="#">Help</a></li>
+	            -->
+	          </ul>
+	        </li>
+	      </ul>
 			</div>
 		</nav>
 
-		<div class="container" ng-controller="HomeCtrl">
+		<div class="container">
 			<div class="row" >
 				<div class="well leagues col-xs-2" ng-controller="LeaguesCtrl">
 					<div ng-include src="'/assets/league_list.html'"></div>

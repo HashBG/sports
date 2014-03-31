@@ -58,11 +58,41 @@ class OddsFeedWorker
     match_def[0..2] * "/"
   end
   
+  def us_odd(rational)
+    if rational < 1
+      (-(100.0 / rational)).round.to_s
+    elsif rational > 1
+      "+" + ((100 * rational).round.to_s)
+    else
+      "+100"
+    end
+  end
+  
+  def uk_odd(odd)
+    precision = 1.0
+    float = odd.to_f
+    nr_decimals = float.to_s.split(".")[1].length
+    if nr_decimals < 2
+      nr_decimals = 2
+    end
+    nr_decimals.times { precision /= 10 }
+    Rational(float - 1.0).rationalize(precision)
+  end
+  
+  def calculate_odd_represantations(odd)
+    r = {}
+    r["decimal"] = odd
+    rational = uk_odd odd
+    r["uk"] = rational.to_s
+    r["us"] = us_odd(rational)
+    r
+  end
+  
   def complex_coefficient(odds)
     r = {}
     odds.each do |odd|
       r[odd[4]] ||= {}
-      r[odd[4]][odd[0]] = odd[5]
+      r[odd[4]][odd[0]] = calculate_odd_represantations odd[5]
     end
     r
   end
@@ -70,7 +100,7 @@ class OddsFeedWorker
   def simple_coefficient(odds)
     r = {}
     odds.each do |odd|
-      r[odd[0]] = odd[4] 
+      r[odd[0]] = calculate_odd_represantations odd[4] 
     end
     r
   end
@@ -155,3 +185,4 @@ class OddsFeedWorker
 
 end
 
+OddsFeedWorker.new.perform

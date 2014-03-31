@@ -1,7 +1,7 @@
 <table class="table table-condensed">
 	<tbody ng-repeat="(country, leagues) in leaguesMap">
-		<tr ng-click="expand(country)">
-			<td>{{ country }}
+		<tr class="nav-row" ng-click="expand(country)">
+			<td><a href="">{{ country }}</a>
 				<i class="glyphicon glyphicon-chevron-down" ng-if="country != expanded"></i>
 				<i class="glyphicon glyphicon-minus" ng-if="country == expanded"></i>
 			</td>

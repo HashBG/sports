@@ -17,6 +17,7 @@
     
     data.rows.forEach (result) ->
       $scope.matches[result.doc["_id"]] = result.doc
+      $scope.matches[result.doc["_id"]]["currentCoefficient"] = result.doc.coefficient 
     
     $scope.pollMatches($scope.currentLeague())
   )
