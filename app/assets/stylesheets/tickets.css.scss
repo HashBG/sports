@@ -3,6 +3,44 @@
   tbody {
     border-bottom: 5px solid;
   }
+  button {
+    width: 100%;
+  }
+  table > tbody > tr > td {
+    padding: 0px;
+  }
+  
+}
+
+#bet-form {
+  .form-group {
+    margin-left: 0px;
+    margin-right: 0px;
+    label, input {
+      margin-right: 20px;
+    }
+  }
+}
+
+//.conversion-info {
+//  float: right;
+//  margin-right: 20px;
+//}
+
+#wager {
+  width: 50px;
+}
+
+.btn-bet {
+  background-color: #D9534F;
+  border-color: #D43F3A;
+  font-size: 20px;
+  width: 100%;
+  color: #FFFFFF;
+  background-image: -webkit-linear-gradient(red 0%, #D9534F 100%); 
+  background-image: -moz-linear-gradient(red 0%, #D9534F 100%); 
+  background-image: -o-linear-gradient(red 0%, #D9534F 100%); 
+  background-image: linear-gradient(red 0%, #D9534F 100%);
 }
 
 #ticket-sidebar {

@@ -1,4 +1,4 @@
-@hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', ($scope, $location, $http) ->
+@hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', '$modal', ($scope, $location, $http, $modal) ->
   $scope.selectedBets = {}
   
   $scope.oddsRepresentations = ["decimal", "us", "uk"]
@@ -139,5 +139,14 @@
 
   $scope.switchOddsRepresentation = (representation) ->
     $scope.oddsRepresentation = representation
-
+    
+  $scope.makeTheBid = () ->
+    modalInstance = $modal.open(
+      templateUrl: "/assets/dialogs/make_bid.html"
+      controller: 'BetCtrl'
+      resolve:
+        selectedBets: ->
+          $scope.selectedBets
+    )
 ]
+

@@ -1,0 +1,68 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">
+    &times;
+  </button>
+  <h4 class="modal-title">Confirm your bets</h4>
+</div>
+<div class="modal-body">
+  <table class="table table-condensed">
+    <tbody class="well" ng-repeat="(ticketKey, ticket) in selectedBets">
+      <tr>
+        <td>{{ printMatchDate(ticketKey) }}</td>
+        <td>{{ printMatch(ticketKey) }}</td>
+        <td>{{ printTicket(ticket) }}</td>
+        <td>{{ printCoefficient(ticketKey, ticket) }}</td>
+      </tr>
+    </tbody>
+    <tbody class="well coefficient-sum">
+      <tr>
+        <td colspan="3">total: </td>
+        <td>{{ printTicketCoefficientTotal() }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <progressbar ng-show='currentProgress && currentProgress != 100' class="progress-striped" value="currentProgress"></progressbar>
+  <div class="row" ng-show='currentProgress==100'>
+    <div id="qrcode" class="col-xs-6"></div>
+    <div class="col-xs-6">
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <td>min</td>
+            <td>max</td>
+          </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td>{{ btcMin }}</td>
+              <td>{{ btcMax }}</td>
+            </tr>
+          </tbody>
+      </table>
+      <div id="bet-form-container">
+        <form id="bet-form" name="betForm" class="css-form form-horizontal" novalidate>
+          <div class="form-group">
+            <label class="control-label input-label" for="wager">Wager:</label>
+            <input id="wager" ng-model="bet_amount" name="bet_amount" type="number" ng-min="{{ btcMin }}" ng-max="{{ btcMax }}" smart-float required />
+            <span class="conversion-info" ng-if='betForm.bet_amount.$valid'> $ {{ bet_amount * exchangeCourse }} </span>
+            <br />
+            <span ng-show="betForm.bet_amount.$error.required">Please enter your desired amount</span>
+            <span ng-show="betForm.bet_amount.$error.number">Please enter a valid amount</span>
+            <span ng-show="betForm.bet_amount.$error.ngMin || betForm.bet_amount.$error.ngMax">
+              The value must be in range {{ btcMin }} to {{ btcMax }}
+            </span>
+          </div>
+          <button ng-disabled="! betForm.bet_amount.$valid" class="btn btn-bet" ng-click="finalizeBet(bet_amount)">Finalize your bet</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" ng-click="cancel()">
+    Cancel
+  </button>
+  <button ng-if="! currentProgress" type="button" class="btn btn-primary" ng-click="betWithBTC()">
+    Bet with BTC
+  </button>
+</div>

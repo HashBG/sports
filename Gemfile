@@ -52,6 +52,7 @@ gem 'node', platforms: :ruby
 gem "rspec-rails"
 
 gem 'angularjs-rails'
+gem 'angular-ui-bootstrap-rails'
 
 gem 'bootstrap-sass'
 
