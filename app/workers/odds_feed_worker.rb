@@ -1,5 +1,3 @@
-require 'debugger'
-
 require 'couchrest'
 
 class OddsFeedWorker
