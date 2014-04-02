@@ -15,7 +15,7 @@ set :scm, "git"
 set :repository, "git@github.com:HashBG/sports.git"
 set :branch, "master"
 
-set :linked_files, %w{config/database.yml config/couchdb.yml}
+#set :linked_files, %w{config/database.yml config/couchdb.yml}
 
 default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
@@ -35,12 +35,14 @@ namespace :deploy do
     sudo "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn_#{application}"
     run "mkdir -p #{shared_path}/config"
     put File.read("config/database.example.yml"), "#{shared_path}/config/database.yml"
+    put File.read("config/couchdb.example.yml"), "#{shared_path}/config/couchdb.yml"
     puts "Now edit the config files in #{shared_path}."
   end
   after "deploy:setup", "deploy:setup_config"
 
   task :symlink_config, roles: :app do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+    run "ln -nfs #{shared_path}/config/couchdb.yml #{release_path}/config/couchdb.yml"
   end
   after "deploy:finalize_update", "deploy:symlink_config"
 
