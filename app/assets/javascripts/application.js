@@ -17,6 +17,7 @@
 //= require angular
 //= require angular-route
 //= require angular-ui-bootstrap-tpls
+//= require angular-translate.min
 //= require main
 //= require_tree .
 

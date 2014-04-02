@@ -13,17 +13,19 @@
 			  
 				<ul class="nav navbar-nav navbar-right">
 	        <li class="dropdown">
-	          <a class="dropdown-toggle" data-toggle="dropdown">{{ oddsRepresentation }}<b class="caret"></b></a>
+	          <a class="dropdown-toggle" data-toggle="dropdown">{{ oddsRepresentation | translate }}<b class="caret"></b></a>
 	          <ul class="dropdown-menu">
-	            <li><a ng-click="switchOddsRepresentation('decimal')">decimal</a></li>
-	            <li><a ng-click="switchOddsRepresentation('uk')">uk</a></li>
-	            <li><a ng-click="switchOddsRepresentation('us')">us</a></li>
-	            <!--
-	            <li class="divider"></li>
-	            <li><a href="#">Help</a></li>
-	            -->
+	            <li ng-repeat="key in oddsRepresentations"><a ng-click="switchOddsRepresentation(key)">{{ key | translate }}</a></li>
 	          </ul>
 	        </li>
+          
+          <li class="dropdown" ng-controller="LangCtrl">
+            <a class="dropdown-toggle" data-toggle="dropdown">{{ currentLanguage() | translate }}<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="" ng-click="changeLang('en_US')">{{ 'en_US' | translate }}</a></li>
+              <li><a href="" ng-click="changeLang('de_DE')">{{ 'de_DE' | translate }}</a></li>
+            </ul>
+          </li>
 	      </ul>
 			</div>
 		</nav>

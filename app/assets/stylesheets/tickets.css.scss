@@ -9,7 +9,10 @@
   table > tbody > tr > td {
     padding: 0px;
   }
-  
+}
+
+.coefficient, .coefficient-total {
+  float: right;
 }
 
 #bet-form {

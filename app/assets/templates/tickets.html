@@ -13,13 +13,14 @@
 		</tr>
 		<tr>
 			<td>{{ printTicket(ticket) }}</td>
-			<td>{{ printCoefficient(ticketKey, ticket) }}</td>
+			<td class="coefficient">{{ printCoefficient(ticketKey, ticket) }}</td>
 		</tr>
 	</tbody>
-	<tbody class="well coefficient-sum">
+	<tbody class="well">
 		<tr>
-			<td>total: </td>
-			<td>{{ printTicketCoefficientTotal() }}</td>
+			<td colspan="2">total: 
+			  <span class="coefficient-total">{{ printTicketCoefficientTotal() }}</span>
+		  </td>
 		</tr>
 	</tbody>
 	

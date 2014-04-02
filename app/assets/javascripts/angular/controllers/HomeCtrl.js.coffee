@@ -1,7 +1,7 @@
 @hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', '$modal', ($scope, $location, $http, $modal) ->
   $scope.selectedBets = {}
   
-  $scope.oddsRepresentations = ["decimal", "us", "uk"]
+  $scope.oddsRepresentations = ["decimal", "uk", "us"]
   $scope.oddsRepresentation = "decimal"
   
   $scope.moreBetsCount = (match) ->
