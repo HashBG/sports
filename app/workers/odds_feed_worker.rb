@@ -11,8 +11,12 @@ class OddsFeedWorker
     minutely
   }
   
+  def config_path
+    "config/couchdb.yml"
+  end
+  
   def initialize
-    @config = YAML.parse_file("config/couchdb.yml").to_ruby[Rails.env]
+    @config = YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
   end
   
   def couch_host(database = "")
@@ -27,6 +31,10 @@ class OddsFeedWorker
     host = @config["host"]
     port = @config["port"]
     "#{protocol}://#{auth}#{host}:#{port}/#{database}"
+  end
+  
+  def admin_only_security_doc
+    {}
   end
   
   def load_odds_feed
@@ -182,7 +190,5 @@ class OddsFeedWorker
       #end
     end
   end
-
 end
 
-OddsFeedWorker.new.perform
