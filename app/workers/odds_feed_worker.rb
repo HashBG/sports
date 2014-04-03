@@ -4,6 +4,8 @@ class OddsFeedWorker
   
   include Sidekiq::Worker
   include Sidetiq::Schedulable
+  
+  sidekiq_options :queue => :odds_feed
 
   # as long as we don't download data, no reoccurrence
   #recurrence {

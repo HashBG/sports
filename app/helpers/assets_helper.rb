@@ -1,19 +1,38 @@
 module AssetsHelper
   def coefficient_button(variable, bet_type, bet_result, modifier = nil)
-    #coefficient = "#{variable}['#{bet_type}']"
-    #coefficient << "[#{modifier}]" if modifier
-    #coefficient << "['#{bet_result}']"
-    #coefficient << "[oddsRepresentation]"
-    
     r = '<button type="button" class="btn btn-default btn-sm" ng-click="'
 
     r << "setBet(#{variable},'#{bet_type}', '#{bet_result}', #{modifier || 'null'})\""
     r << " ng-disabled=\"disableSetBet(#{variable},'#{bet_type}', '#{bet_result}', #{modifier || 'null'})\""
     
     r << ">{{ showCoefficient(#{variable},'#{bet_type}', '#{bet_result}', #{modifier || 'null'}) }}</button>"
-    #r << "> {{"
-    #r << coefficient
-    #r << " }}</button>"
     r
+  end
+  
+  def couchdb_leagues_url
+    #@couchdb_config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+    if Rails.env == "production"
+      "couchdb/leagues"
+    else
+      "http://127.0.0.1:5984/leagues/_all_docs?include_docs=true&endkey=%22_%22"
+    end
+  end
+  
+  def couchdb_league_base
+    #@couchdb_config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+    if Rails.env == "production"
+      "couchdb/league/"
+    else
+      "http://127.0.0.1:5984/"
+    end
+  end
+  
+  def couchdb_league_ext
+    #@couchdb_config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+    if Rails.env == "production"
+      "/matches"
+    else
+      "/_all_docs?include_docs=true&endkey=%22_%22"
+    end
   end
 end
