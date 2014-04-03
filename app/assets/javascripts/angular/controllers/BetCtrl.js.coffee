@@ -1,4 +1,4 @@
-@hashbg_sports.controller 'BetCtrl', ($scope, $modalInstance, selectedBets, $controller, $http, $timeout) ->
+@hashbg_sports.controller 'BetCtrl', ['$scope', '$modalInstance', 'selectedBets', '$controller', '$http', '$timeout',($scope, $modalInstance, selectedBets, $controller, $http, $timeout) ->
   $controller('HomeCtrl', {$scope: $scope});
   $scope.selectedBets = selectedBets
   $scope.exchangeCourse = 0
@@ -25,3 +25,4 @@
   
   $scope.cancel = ->
     $modalInstance.dismiss "cancel"
+]
