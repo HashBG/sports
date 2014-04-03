@@ -8,6 +8,6 @@ HashbgSports::Application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
   
   #get 'bet_with_btc' => 'bet#bet_with_btc', :constraints => {:format => :json}
-  get 'bet_with_btc' => 'bet#bet_with_btc', :format=>false, :defaults=>{:format=>'json'}
+  post 'bet_with_btc' => 'bet#bet_with_btc', :format=>false, :defaults=>{:format=>'json'}
   
 end

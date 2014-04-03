@@ -11,16 +11,19 @@
         $scope.currentProgress = 20
     , 10)
     
-    $http.get("bet_with_btc").success((data) ->
+    $http.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+    $http.post("bet_with_btc", {bets: $scope.selectedBets}).success((data) ->
       $scope.currentProgress = 99
       $scope.btcMin = data.min
       $scope.btcMax = data.max
       $scope.exchangeCourse = data.exchangeCourse
       new QRCode(document.getElementById("qrcode"), data.btc_address);
       $scope.currentProgress = 100
+      # $scope.btc_address = data.btc_address
     )
   
   $scope.finalizeBet = (bet_amount) ->
+    
     $modalInstance.close ""
   
   $scope.cancel = ->

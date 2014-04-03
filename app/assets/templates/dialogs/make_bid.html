@@ -23,7 +23,10 @@
   </table>
   <progressbar ng-show='currentProgress && currentProgress != 100' class="progress-striped" value="currentProgress"></progressbar>
   <div class="row" ng-show='currentProgress==100'>
-    <div id="qrcode" class="col-xs-6"></div>
+    <div id="qrcode" class="col-xs-6">
+      <div id="qrcode"></div>
+    </div>
+    
     <div class="col-xs-6">
       <table class="table table-condensed">
         <thead>

@@ -1,6 +1,6 @@
 @hashbg_sports.config(['$translateProvider', ($translateProvider) ->
   $translateProvider.translations('en_US', {
-    decimal:  'decimal',
+    decimal:  'EU',
     uk:      'UK',
     us:     'US',
     en_US:  'English'
@@ -8,7 +8,7 @@
   });
   
   $translateProvider.translations('de_DE', {
-    decimal:  'dezimal',
+    decimal:  'EU',
     uk:      'UK',
     us:     'US',
     en_US:  'Englisch'

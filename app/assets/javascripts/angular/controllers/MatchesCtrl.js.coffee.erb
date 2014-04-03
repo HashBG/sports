@@ -36,7 +36,7 @@
     else
       $scope.setDetails(match)
       
-  pollAddress = () ->
+  $scope.pollAddress = () ->
     if $scope.lastSeq
       "<%= couchdb_league_base %>"+$scope.currentLeague()+"<%= couchdb_match_changes_since %>" + $scope.lastSeq
     else
@@ -49,7 +49,7 @@
   
     $scope.$parent.canceler = $q.defer();
 
-    $http.get(pollAddress(), timeout: $scope.$parent.canceler.promise).success((data) ->
+    $http.get($scope.pollAddress(), timeout: $scope.$parent.canceler.promise).success((data) ->
       if $scope.currentLeague() == db_name
         if $scope.lastSeq
           for result in data.results
