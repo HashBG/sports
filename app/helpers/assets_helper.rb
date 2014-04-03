@@ -35,4 +35,22 @@ module AssetsHelper
       "/_all_docs?include_docs=true&endkey=%22_%22"
     end
   end
+  
+  def couchdb_match_changes
+    #@couchdb_config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+    if Rails.env == "production"
+      "/changes"
+    else
+      "/_changes"
+    end
+  end
+
+  def couchdb_match_changes_since
+    #@couchdb_config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+    if Rails.env == "production"
+      "/changes_since/"
+    else
+      "/_changes?feed=longpoll&include_docs=true&since=" 
+    end
+  end
 end

@@ -142,7 +142,7 @@
     
   $scope.makeTheBid = () ->
     modalInstance = $modal.open(
-      templateUrl: "/assets/dialogs/make_bid.html"
+      templateUrl: "<%= asset_path('dialogs/make_bid.html') %>"
       controller: 'BetCtrl'
       resolve:
         selectedBets: ->

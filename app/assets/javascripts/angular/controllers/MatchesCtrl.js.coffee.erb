@@ -35,17 +35,21 @@
       $scope.detailsFor = null
     else
       $scope.setDetails(match)
+      
+  pollAddress = () ->
+    if $scope.lastSeq
+      "<%= couchdb_league_base %>"+$scope.currentLeague()+"<%= couchdb_match_changes_since %>" + $scope.lastSeq
+    else
+      "<%= couchdb_league_base %>"+$scope.currentLeague()+"<%= couchdb_match_changes %>"
+      
   
   $scope.pollMatches = (db_name) ->
     if $scope.currentLeague() == null || $scope.currentLeague() != db_name
       return
-    params = "feed=longpoll"
-    if $scope.lastSeq
-      params = params + "&since="+ $scope.lastSeq + "&include_docs=true"
   
     $scope.$parent.canceler = $q.defer();
 
-    $http.get("http://127.0.0.1:5984/"+db_name+"/_changes?" + params, timeout: $scope.$parent.canceler.promise).success((data) ->
+    $http.get(pollAddress(), timeout: $scope.$parent.canceler.promise).success((data) ->
       if $scope.currentLeague() == db_name
         if $scope.lastSeq
           for result in data.results
