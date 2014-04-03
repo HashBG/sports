@@ -33,14 +33,14 @@
 		<div class="container">
 			<div class="row" >
 				<div class="well leagues col-xs-2" ng-controller="LeaguesCtrl">
-					<div ng-include src="'/assets/league_list.html'"></div>
+					<div ng-include src="'<%= asset_path('league_list.html') %>'"></div>
 				</div>
 
 				<div class="matches col-xs-7" ng-view>
 				</div>
 				
 				<div id="ticket-sidebar" class="tickets col-xs-3">
-					<div ng-include src="'/assets/tickets.html'"></div>
+					<div ng-include src="'<%= asset_path('tickets.html') %>'"></div>
 				</div>
 			</div>
 		</div>

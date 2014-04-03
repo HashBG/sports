@@ -26,25 +26,17 @@ class OddsFeedWorker
   
   def doc_changed?(old_doc, new_doc, &block)
     if (diff = old_doc.to_hash.diff(new_doc).except("_id","_rev")).present?
-      to_add, to_remove = diff.inject([[], []]) do |f,a|
-        old_doc.keys.include?(a.first) ? f.last << a : f.first << a; f
-      end
-      block.call to_add, to_remove
+      block.call diff
     end
   end
   
   def update_doc!(db, doc_id, new_doc)
     begin
       old_doc = db.get(doc_id)
-      doc_changed?(old_doc, new_doc) do |to_add, to_remove|
-        if to_remove.present?
-          new_doc["_id"] = old_doc["_id"]
-          new_doc["_rev"] = old_doc["_rev"]
-          db.save_doc new_doc
-        else
-          old_doc.merge!(to_add)
-          db.save_doc old_doc
-        end
+      doc_changed?(old_doc, new_doc) do |diff|
+        new_doc["_id"] = old_doc["_id"] || doc_id
+        new_doc["_rev"] = old_doc["_rev"] if old_doc["_rev"] 
+        db.save_doc new_doc
         logger.info "updated document #{doc_id}" 
       end
     rescue RestClient::ResourceNotFound => nfe
@@ -230,4 +222,3 @@ class OddsFeedWorker
     }
   end
 end
-
