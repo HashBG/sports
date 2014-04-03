@@ -12,7 +12,7 @@
   $scope.currentLeague = () ->
     $routeParams.league_name
   
-  $http.get("http://127.0.0.1:5984/"+$scope.currentLeague()+"/_all_docs?include_docs=true").success((data) ->
+  $http.get("http://127.0.0.1:5984/"+$scope.currentLeague()+"/_all_docs?include_docs=true&endkey=%22_%22").success((data) ->
     $scope.matches = {}
     
     data.rows.forEach (result) ->

@@ -2,7 +2,7 @@
   
   $scope.leagues = []
   $scope.leaguesMap = {}
-  $http.get("http://127.0.0.1:5984/leagues/_all_docs?include_docs=true").success((data) ->
+  $http.get("http://127.0.0.1:5984/leagues/_all_docs?include_docs=true&endkey=%22_%22").success((data) ->
     for league in data.rows
       $scope.leaguesMap[league.doc.country] or= []
       $scope.leaguesMap[league.doc.country].push league.doc

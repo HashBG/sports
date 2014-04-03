@@ -5,16 +5,59 @@ class OddsFeedWorker
   include Sidekiq::Worker
   include Sidetiq::Schedulable
 
-  recurrence {
-    minutely
-  }
+  # as long as we don't download data, no reoccurrence
+  #recurrence {
+  #  minutely
+  #}
+  
+  def initialize
+    @config = YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+  end
   
   def config_path
     "config/couchdb.yml"
   end
   
-  def initialize
-    @config = YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
+  def admin_user
+    @config["username"]
+  end
+  
+  def doc_changed?(old_doc, new_doc, &block)
+    if (diff = old_doc.to_hash.diff(new_doc).except("_id","_rev")).present?
+      to_add, to_remove = diff.inject([[], []]) do |f,a|
+        old_doc.keys.include?(a.first) ? f.last << a : f.first << a; f
+      end
+      block.call to_add, to_remove
+    end
+  end
+  
+  def update_doc!(db, doc_id, new_doc)
+    begin
+      old_doc = db.get(doc_id)
+      doc_changed?(old_doc, new_doc) do |to_add, to_remove|
+        if to_remove.present?
+          new_doc["_id"] = old_doc["_id"]
+          new_doc["_rev"] = old_doc["_rev"]
+          db.save_doc new_doc
+        else
+          old_doc.merge!(to_add)
+          db.save_doc old_doc
+        end
+        logger.info "updated document #{doc_id}" 
+      end
+    rescue RestClient::ResourceNotFound => nfe
+      new_doc["_id"] = doc_id
+      db.save_doc new_doc
+      logger.info "created document #{doc_id}"
+    end
+  end
+  
+  def ensure_leagues_db_permissions!(db)
+    update_doc! db, "_security", leagues_db_permissions
+  end
+  
+  def ensure_read_only_db!(db)
+    update_doc! db, "_design/security", read_only_permissions
   end
   
   def couch_host(database = "")
@@ -31,11 +74,8 @@ class OddsFeedWorker
     "#{protocol}://#{auth}#{host}:#{port}/#{database}"
   end
   
-  def admin_only_security_doc
-    {}
-  end
-  
   def load_odds_feed
+    logger.info "load and parse feed"
     odds_feed = {}
     leagues_feed = {}
 
@@ -53,13 +93,7 @@ class OddsFeedWorker
     end
     [odds_feed, leagues_feed]
   end
-  
-  def load_current_leagues
-     db = CouchRest.database!(couch_host("leagues"))
-     #db.all_docs["rows"]
-     db.all_docs["rows"].map{|doc| doc["id"]}
-  end
-  
+
   def build_match_id(match_def)
     match_def[0..2] * "/"
   end
@@ -127,31 +161,21 @@ class OddsFeedWorker
   end
   
   def update_matches(db_name, matches)
+    logger.info "updating matches for #{db_name}."
     db = CouchRest.database!(couch_host(db_name))
+    ensure_read_only_db!(db)
     
-    existing_entries = db.all_docs["rows"].map{|e|e["id"]}
+    existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
     
-    to_insert = []
-    
+    # TODO use bulk update
     matches.each do |match|
       new_doc = build_odds_doc(match)
       
-      db_id = build_match_id(match)
-      # TODO use bulk update
-      if existing_entries.include? db_id
-        existing_doc = db.get(db_id)
-        if (diff = existing_doc.to_hash.diff(new_doc).except("_id","_rev")).present?
-          if (to_add = diff.except(*existing_doc.keys)).present?
-            existing_doc.merge!(to_add)
-            db.save_doc existing_doc
-          else
-            new_doc["_id"] = existing_doc["_id"]
-            new_doc["_rev"] = existing_doc["_rev"]
-            db.save_doc new_doc
-          end
-        end
+      match_id = build_match_id(match)
+      if existing_entries.include? match_id
+        update_doc!(db, match_id, new_doc)
       else
-        new_doc["_id"] = db_id
+        new_doc["_id"] = match_id
         db.save_doc new_doc 
       end
     end
@@ -165,7 +189,10 @@ class OddsFeedWorker
     odds_feed, leagues_feed = load_odds_feed
     
     leagues_db = CouchRest.database!(couch_host("leagues"))
-    leagues = leagues_db.all_docs["rows"]
+    ensure_leagues_db_permissions!(leagues_db)
+
+    # consider using bulk edit for leagues
+    #leagues = leagues_db.all_docs(endkey: "_")["rows"]
         
     odds_feed.each do |league_name, matches|
       db_name = league_name.gsub(/[\ \.]/,"_").underscore
@@ -173,20 +200,32 @@ class OddsFeedWorker
       
       league_from_feed = leagues_feed[league_name]
       league_from_feed["db_name"] = db_name
-      stored_league = leagues.select{|l| l["id"] == league_name}[0  ]
-      if stored_league
-        league_from_feed["_rev"] = stored_league["value"]["rev"]
-      else
-        stored_league = league_from_feed
-      end
-      league_from_feed["_id"] = league_name
-      
-      leagues_db.save_doc league_from_feed 
-      
-      #unless leagues.include? league_name
-      #  leagues_db.save_doc build_league_doc(league_name, db_name)
-      #end
+
+      update_doc!(leagues_db, league_name, league_from_feed)
     end
+  end
+  
+  def leagues_db_permissions
+    {"admins" => {
+      "names" => [admin_user], 
+      "roles" => [admin_user]
+    }, "readers" => {
+      "names" => [],
+      "roles" => []
+    }}
+  end
+  
+  def read_only_permissions
+    {
+      "validate_doc_update" => 
+      <<-JAVASCRIPT
+        function(new_doc, old_doc, userCtx) {
+          if(!userCtx || userCtx.name != "#{admin_user}") {
+            throw({forbidden: "Bad user"});
+          }
+        }
+      JAVASCRIPT
+    }
   end
 end
 
