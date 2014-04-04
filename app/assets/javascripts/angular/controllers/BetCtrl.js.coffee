@@ -11,7 +11,7 @@
         $scope.currentProgress = 20
     , 10)
     
-    $http.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+    $http.defaults.headers.post['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
     $http.post("bet_with_btc", {bets: $scope.selectedBets}).success((data) ->
       $scope.currentProgress = 99
       $scope.btcMin = data.min

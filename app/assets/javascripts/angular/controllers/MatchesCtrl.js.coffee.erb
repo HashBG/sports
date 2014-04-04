@@ -64,4 +64,12 @@
     error((err) ->
       # check if aborted
     )
+    
+  $rootScope.$on("$locationChangeStart", (event, next, current) -> 
+    if $scope.$parent && $scope.$parent.canceler
+      canceler = $scope.$parent.canceler
+      $timeout(() ->
+        canceler.resolve("League to follow changed")
+      )
+  ) 
 ]
