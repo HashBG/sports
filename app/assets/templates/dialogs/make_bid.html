@@ -44,20 +44,12 @@
           </tbody>
       </table>
       <div id="bet-form-container">
-        <form id="bet-form" name="betForm" class="css-form form-horizontal" novalidate>
-          <div class="form-group">
-            <label class="control-label input-label" for="wager">Wager:</label>
-            <input id="wager" ng-model="bet_amount" name="bet_amount" type="number" ng-min="{{ btcMin }}" ng-max="{{ btcMax }}" smart-float required />
-            <span class="conversion-info" ng-if='betForm.bet_amount.$valid'> $ {{ bet_amount * exchangeCourse }} </span>
-            <br />
-            <span ng-show="betForm.bet_amount.$error.required">Please enter your desired amount</span>
-            <span ng-show="betForm.bet_amount.$error.number">Please enter a valid amount</span>
-            <span ng-show="betForm.bet_amount.$error.ngMin || betForm.bet_amount.$error.ngMax">
-              The value must be in range {{ btcMin }} to {{ btcMax }}
-            </span>
-          </div>
-          <button ng-disabled="! betForm.bet_amount.$valid" class="btn btn-bet" ng-click="finalizeBet(bet_amount)">Finalize your bet</button>
-        </form>
+        <div>Bet initiated at {{ counterStart | date: 'hh:mm:ss' }}</div>
+        <h4 ng-if="! timerElapsed()">Bet reserved for {{ countdown | date: 'mm:ss'}} minutes</h4>
+        <progressbar ng-show="! timerElapsed()" type="warning" class="progress-striped active" value="countdownPercent()"></progressbar>
+
+        <div ng-if="! timerElapsed()">Awaiting your payment amount ...</div>
+        <h4 ng-if="timerElapsed()">Your bet expired. Please bet again.</h4>
       </div>
     </div>
   </div>

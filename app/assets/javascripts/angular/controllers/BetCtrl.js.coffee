@@ -19,13 +19,35 @@
       $scope.exchangeCourse = data.exchangeCourse
       $scope.btc_address = data.btc_address
       new QRCode(document.getElementById("qrcode"), data.btc_address);
+      $scope.startTimer()
       $scope.currentProgress = 100
     )
   
   $scope.finalizeBet = (bet_amount) ->
-    
     $modalInstance.close ""
   
   $scope.cancel = ->
     $modalInstance.dismiss "cancel"
+  
+  $scope.countdownMax = 300000
+  $scope.countdown = $scope.countdownMax 
+  
+  $scope.countdownPercent = () ->
+    ($scope.countdown / $scope.countdownMax) * 100
+    
+  $scope.onTicker = () ->
+    if $scope.countdown > 0
+      $scope.countdown = $scope.countdownMax - (Date.now() - $scope.counterStart)
+      if $scope.countdown <= 0
+        $scope.countdown = 0
+      else
+        $timeout($scope.onTicker,1000);
+      
+  $scope.timerElapsed = () ->
+    $scope.countdown <= 0
+    
+  $scope.startTimer = () ->
+    $scope.counterStart = Date.now()
+    $scope.countdown = $scope.countdownMax
+    $timeout($scope.onTicker,1000);
 ]
