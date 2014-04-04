@@ -10,18 +10,7 @@
     margin-bottom: 0px;
   }
   
-  .ng-hide-add, .ng-hide-remove {
-    -webkit-transition:all linear 1.0s;
-    -moz-transition:all linear 1.0s;
-    -o-transition:all linear 1.0s;
-    transition:all linear 1.0s;
-  }
-  
-  .ng-hide-add, .ng-hide-remove {
-    -webkit-transition:all linear 0.5s;
-    -moz-transition:all linear 0.5s;
-    -o-transition:all linear 0.5s;
-    transition:all linear 0.5s;
-    display:block!important;
+  .sub-nav-leagues {
+    padding: 0px 0px 5px 5px
   }
 }

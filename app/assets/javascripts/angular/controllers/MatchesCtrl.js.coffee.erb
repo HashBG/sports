@@ -51,12 +51,14 @@
 
     $http.get($scope.pollAddress(), timeout: $scope.$parent.canceler.promise).success((data) ->
       if $scope.currentLeague() == db_name
-        if $scope.lastSeq
-          for result in data.results
-            $scope.matches[result.doc["_id"]] = result.doc
-            if result.doc["_id"] is $scope.detailsFor
-              $scope.setDetails result.doc
-        $scope.lastSeq = data.last_seq
+        if $scope.lastSeq 
+          if data.results
+            for result in data.results
+              $scope.matches[result.doc["_id"]] = result.doc
+              if result.doc["_id"] is $scope.detailsFor
+                $scope.setDetails result.doc
+        if data.last_seq
+          $scope.lastSeq = data.last_seq
         $scope.pollMatches(db_name)
     ).
     error((err) ->
