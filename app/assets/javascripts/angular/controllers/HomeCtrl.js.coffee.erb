@@ -1,4 +1,5 @@
 @hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', '$modal', ($scope, $location, $http, $modal) ->
+  window.location.hash = "#"
   $scope.selectedBets = {}
   
   $scope.oddsRepresentations = ["decimal", "uk", "us"]
