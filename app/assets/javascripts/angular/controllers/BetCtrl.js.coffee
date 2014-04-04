@@ -17,9 +17,9 @@
       $scope.btcMin = data.min
       $scope.btcMax = data.max
       $scope.exchangeCourse = data.exchangeCourse
+      $scope.btc_address = data.btc_address
       new QRCode(document.getElementById("qrcode"), data.btc_address);
       $scope.currentProgress = 100
-      # $scope.btc_address = data.btc_address
     )
   
   $scope.finalizeBet = (bet_amount) ->

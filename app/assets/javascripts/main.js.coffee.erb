@@ -12,6 +12,9 @@
       templateUrl: '<%= asset_path("matches.html") %>'
       controller: 'MatchesCtrl'
     }).
+    when('/faq', {
+      templateUrl: '<%= asset_path("faq.html") %>'
+    }).
     otherwise({
        controller: 'HomeCtrl'
     }) 
