@@ -12,7 +12,7 @@
     for bet in otherBets
       for k, v of match[bet]
         # k can be modifier or result
-        if typeof v == 'string'
+        if v.decimal
           i += 1
           break
         else
