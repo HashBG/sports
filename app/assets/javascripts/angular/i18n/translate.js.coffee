@@ -3,7 +3,7 @@
     decimal:  'EU',
     uk:      'UK',
     us:     'US',
-    en_US:  'English'
+    en_US:  'English',
     de_DE:  'German'
   });
   
@@ -11,7 +11,7 @@
     decimal:  'EU',
     uk:      'UK',
     us:     'US',
-    en_US:  'Englisch'
+    en_US:  'Englisch',
     de_DE:  'Deutsch'
   });
   
