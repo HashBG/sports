@@ -1,7 +1,7 @@
 .well.leagues {
   padding: 0px;
-  tr:hover {
-    background-color: #FFFFFF;
+  tr:first-child:hover {
+    background-color: $body-bg;
   }
   i {
     float: right;
@@ -11,6 +11,10 @@
   }
   
   .sub-nav-leagues {
-    padding: 0px 0px 5px 5px
+    padding: 0px 0px 5px 5px;
+    
+    tr:hover {
+      background-color: $body-bg;
+    }
   }
 }

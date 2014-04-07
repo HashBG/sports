@@ -4,9 +4,8 @@
 		<tr>
 			<td>{{ printMatchDate(ticketKey) }}</td>
 			<td>
-			<button ng-click='removeBet(ticketKey)' class="btn btn-default btn-xs ng-binding" type="button">
-				x
-			</button></td>
+			  <i ng-click='removeBet(ticketKey)' class="remove-ticket glyphicon glyphicon-minus" ng-if="country == expanded"></i>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2">{{ printMatch(ticketKey) }}</td>
