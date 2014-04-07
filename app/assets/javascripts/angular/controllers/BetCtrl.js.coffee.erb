@@ -13,14 +13,17 @@
     
     $http.defaults.headers.post['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
     $http.post("bet_with_btc", {bets: $scope.selectedBets}).success((data) ->
-      $scope.currentProgress = 99
-      $scope.btcMin = data.min
-      $scope.btcMax = data.max
-      $scope.exchangeCourse = data.exchangeCourse
-      $scope.btc_address = data.btc_address
-      new QRCode(document.getElementById("qrcode"), data.btc_address);
-      $scope.startTimer()
-      $scope.currentProgress = 100
+      if data.btc_address
+        $scope.currentProgress = 99
+        $scope.btcMin = data.min
+        $scope.btcMax = data.max
+        $scope.exchangeCourse = data.exchangeCourse
+        $scope.btc_address = data.btc_address
+        new QRCode(document.getElementById("qrcode"), data.btc_address);
+        $scope.startTimer()
+        $scope.currentProgress = 100
+      else
+        $scope.bet_error = data.error
     )
   
   $scope.finalizeBet = (bet_amount) ->
@@ -84,7 +87,7 @@
         if data.last_seq
           $scope.lastSeq = data.last_seq
         $scope.pollBets()
-      else if (! $scope.lastSeq?) && (! payment_recieved)
+      else if (! $scope.lastSeq?)
         if data.last_seq
           $scope.lastSeq = data.last_seq
         $scope.pollBets()

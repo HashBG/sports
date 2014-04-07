@@ -21,50 +21,56 @@
       </tr>
     </tbody>
   </table>
-  <progressbar ng-show='currentProgress && currentProgress != 100' class="progress-striped" value="currentProgress"></progressbar>
-  <div class="row" ng-show='currentProgress==100'>
-    <div id="qrcode" class="col-xs-6">
-      <div id="qrcode"></div>
-      <div>{{ btc_address }}</div>
-    </div>
-    
-    <div class="col-xs-6">
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <td>min</td>
-            <td>max</td>
-          </tr>
-          </tbody>
-          <tbody>
+  <span ng-if='! bet_error'>
+    <progressbar ng-show='currentProgress && currentProgress != 100' class="progress-striped" value="currentProgress"></progressbar>
+    <div class="row" ng-show='currentProgress==100'>
+      <div id="qrcode" class="col-xs-6">
+        <div id="qrcode"></div>
+        <div>{{ btc_address }}</div>
+      </div>
+      
+      <div class="col-xs-6">
+        <table class="table table-condensed">
+          <thead>
             <tr>
-              <td>{{ btcMin }}</td>
-              <td>{{ btcMax }}</td>
+              <td>min</td>
+              <td>max</td>
             </tr>
-          </tbody>
-      </table>
-      <div id="bet-form-container">
-        <div>Bet initiated at {{ counterStart | date: 'hh:mm:ss' }}</div>
-        <span ng-show='! paymentReceived()'>
-          <h4 ng-if="! timerElapsed()">Bet reserved for {{ countdown | date: 'mm:ss'}} minutes</h4>
-          <progressbar ng-show="! timerElapsed()" type="warning" class="progress-striped active" value="countdownPercent()"></progressbar>
-  
-          <div ng-if="! timerElapsed()">Awaiting your payment amount ...</div>
-          <h4 ng-if="timerElapsed()">Your bet expired. Please bet again.</h4>
-        </span>
-        <span ng-show='paymentReceived()'>
-          <div ng-if="receivedPayment.payment">
-            <h4>Received your wager from:<br>{{ receivedPayment.payment.sender_address }}</h4>
-            <div>Amount: {{ receivedPayment.payment.amount }}</div>
-          </div>
-          <div ng-if="receivedPayment.error">
-            <h4>There was an error in receiving your wager</h4>
-            <div>Error: {{ receivedPayment.error.description }}</div>
-          </div>
-        </span>
+            </tbody>
+            <tbody>
+              <tr>
+                <td>{{ btcMin }}</td>
+                <td>{{ btcMax }}</td>
+              </tr>
+            </tbody>
+        </table>
+        <div id="bet-form-container">
+          <div>Bet initiated at {{ counterStart | date: 'hh:mm:ss' }}</div>
+          <span ng-show='! paymentReceived()'>
+            <h4 ng-if="! timerElapsed()">Bet reserved for {{ countdown | date: 'mm:ss'}} minutes</h4>
+            <progressbar ng-show="! timerElapsed()" type="warning" class="progress-striped active" value="countdownPercent()"></progressbar>
+    
+            <div ng-if="! timerElapsed()">Awaiting your payment amount ...</div>
+            <h4 ng-if="timerElapsed()">Your bet expired. Please bet again.</h4>
+          </span>
+          <span ng-show='paymentReceived()'>
+            <div ng-if="receivedPayment.payment">
+              <h4>Received your wager from:<br>{{ receivedPayment.payment.sender_address }}</h4>
+              <div>Amount: {{ receivedPayment.payment.amount }}</div>
+            </div>
+            <div ng-if="receivedPayment.error">
+              <h4>There was an error in receiving your wager</h4>
+              <div>Error: {{ receivedPayment.error.description }}</div>
+            </div>
+          </span>
+        </div>
       </div>
     </div>
-  </div>
+  </span>
+  <span ng-if='bet_error'>
+    <h4>There was an error in providing you a bitcoin address.</h4>
+    <div>Error: {{ bet_error }}</div>
+  </span>
 </div>
 <div class="modal-footer">
   <button ng-show='!paymentReceived()' type="button" class="btn btn-warning" ng-click="cancel()">

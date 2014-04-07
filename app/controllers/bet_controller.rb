@@ -13,22 +13,32 @@ class BetController < ApplicationController
   end
     
   def bet_with_btc
-    btc_address = RestClient.post "http://87.117.226.162/WebApi/GetAddress.aspx",  {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
-
-    if btc_address
+    #btc_address = RestClient.post "http://87.117.226.162/WebApi/GetAddress.aspx",  {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
+    begin
+      json = RestClient.post "http://10.10.10.66/WebApi/GetAddress.aspx", {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
+      response = JSON.parse json
+    rescue => e
+      debugger
+      response = {}
+      response["error"] = "Invalid response from bitcoin address server: #{e.message}"
+      logger.error("Could not connect to btc_address server: " + e.message)
+    end
+    if response["status"] == "OK" && btc_address = response["btc_address"]
       store_btc_address_to_listen!(btc_address)
       answer = {
         min: 0.001,
         max: 0.1,
         exchangeCourse: 500,
-        #btc_address: "msNwmVTAJpYYa1Ppxn62gnmoeYtzLVt3ZS"
         btc_address: btc_address
       }
       render json: answer
     else
-      render json: {error: "No bitcoin address available"}
+      msg = "No bitcoin address available"
+      if response["error"]
+        msg = response["error"]
+      end
+      render json: {error: msg}
     end
-
   end
   
   def received_btc_amount

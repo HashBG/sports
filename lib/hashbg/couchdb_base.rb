@@ -3,10 +3,6 @@ require 'couchrest'
 module Hashbg
   module CouchdbBase
     
-    def initialize
-      init_config
-    end
-    
     def init_config
       @config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
     end
@@ -51,6 +47,7 @@ module Hashbg
     end
 
     def couch_host(database = "")
+      init_config
       protocol = @config["protocol"]
       username = @config["username"]
       password = @config["password"]
