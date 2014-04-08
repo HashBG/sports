@@ -5,9 +5,9 @@ class OddsFeedWorker
   include Hashbg::CouchdbBase
   
   include Sidekiq::Worker
-  include Sidetiq::Schedulable
-  
   sidekiq_options :queue => :odds_feed
+  
+  include Sidetiq::Schedulable
 
   recurrence {
     hourly.minute_of_hour(*((0..11).to_a.map{|d|d*5}))
@@ -18,20 +18,22 @@ class OddsFeedWorker
     odds_feed = {}
     leagues_feed = {}
     
-    feed_tick = Redis.current.get("FeedTick").to_i
-    puts "OLD TICK: #{feed_tick}"
+    feed_tick = Redis.current.get("FeedTick")
+    if feed_tick
+      feed_tick = feed_tick.to_i + 1
+    end
     feed = Hashbg::Apis.get_odds_feed(feed_tick)
     Redis.current.set("FeedTick", feed["FeedTick"])
-    puts "NEW TICK: #{feed_tick}"
-    debugger
     
-    # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
-    feed["Feed: "].each do |distributor_name, sports|
-      distributor_name == "Bet365" && sports.each do |sport_name, country_scopes|
-        country_scopes.each do |country_scope, leagues|
-          leagues.each do |league_name, matches|
-            odds_feed[league_name] = matches
-            leagues_feed[league_name] = {"country" => country_scope}
+    if feed["Feed: "]
+      # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
+      feed["Feed: "].each do |distributor_name, sports|
+        distributor_name == "Bet365" && sports.each do |sport_name, country_scopes|
+          country_scopes.each do |country_scope, leagues|
+            leagues.each do |league_name, matches|
+              odds_feed[league_name] = matches
+              leagues_feed[league_name] = {"country" => country_scope}
+            end
           end
         end
       end
@@ -137,18 +139,22 @@ class OddsFeedWorker
   
   def load_feed_and_update_couchdb
     odds_feed, leagues_feed = load_odds_feed
-    
-    leagues_db = CouchRest.database!(couch_admin_host("leagues"))
-    ensure_admin_permissions!(leagues_db)
-        
-    odds_feed.each do |league_name, matches|
-      db_name = league_name.gsub(/[\ \.\&]/,"_").underscore
-      update_matches(db_name, matches)
+    if odds_feed.present? && leagues_feed.present?
       
-      league_from_feed = leagues_feed[league_name]
-      league_from_feed["db_name"] = db_name
-
-      update_doc!(leagues_db, league_name, league_from_feed)
+      leagues_db = CouchRest.database!(couch_admin_host("leagues"))
+      ensure_admin_permissions!(leagues_db)
+          
+      odds_feed.each do |league_name, matches|
+        db_name = league_name.gsub(/[\ \.\&]/,"_").underscore
+        update_matches(db_name, matches)
+        
+        league_from_feed = leagues_feed[league_name]
+        league_from_feed["db_name"] = db_name
+  
+        update_doc!(leagues_db, league_name, league_from_feed)
+      end
+    else
+      logger.info "feed loaded but no new data"
     end
   end
   
