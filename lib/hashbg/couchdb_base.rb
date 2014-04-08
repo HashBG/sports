@@ -12,10 +12,6 @@ module Hashbg
       couchdb_config["username"]
     end
     
-    def btc_api_uri
-      couchdb_config["btc_api_uri"]
-    end
-
     def doc_changed?(old_doc, new_doc, &block)
       if (diff = old_doc.to_hash.diff(new_doc).except("_id","_rev")).present?
       block.call diff

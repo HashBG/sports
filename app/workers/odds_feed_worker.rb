@@ -9,17 +9,19 @@ class OddsFeedWorker
   
   sidekiq_options :queue => :odds_feed
 
-  # as long as we don't download data, no reoccurrence
-  #recurrence {
-  #  minutely
-  #}
+  recurrence {
+    hourly.minute_of_hour(*((0..11).to_a.map{|d|d*5}))
+  }
   
   def load_odds_feed
     logger.info "load and parse feed"
     odds_feed = {}
     leagues_feed = {}
-
-    feed = JSON.parse(File.read('db/fixtures/OddsFeed.json'))
+    
+    feed_tick = Redis.current.get("FeedTick").to_i
+    feed = Hashbg::Apis.get_odds_feed(feed_tick)
+    Redis.current.set("FeedTick", feed["FeedTick"])
+    
     # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
     feed["Feed: "].each do |distributor_name, sports|
       distributor_name == "Bet365" && sports.each do |sport_name, country_scopes|
@@ -126,9 +128,6 @@ class OddsFeedWorker
     
     leagues_db = CouchRest.database!(couch_admin_host("leagues"))
     ensure_admin_permissions!(leagues_db)
-
-    # consider using bulk edit for leagues
-    #leagues = leagues_db.all_docs(endkey: "_")["rows"]
         
     odds_feed.each do |league_name, matches|
       db_name = league_name.gsub(/[\ \.]/,"_").underscore
@@ -140,5 +139,5 @@ class OddsFeedWorker
       update_doc!(leagues_db, league_name, league_from_feed)
     end
   end
-  
 end
+

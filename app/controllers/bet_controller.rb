@@ -13,7 +13,7 @@ class BetController < ApplicationController
     
   def bet_with_btc
     begin
-      json = RestClient.post btc_api_uri, {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
+      json = RestClient.post Hashbg::Apis.btc_api_uri, {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
       response = JSON.parse json
     rescue => e
       response = {}
