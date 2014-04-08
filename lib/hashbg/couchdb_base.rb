@@ -3,16 +3,17 @@ require 'couchrest'
 module Hashbg
   module CouchdbBase
     
-    def init_config
-      @config ||= YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
-    end
-
-    def config_path
-      "config/couchdb.yml"
-    end
+    mattr_accessor :couchdb_config
+    mattr_accessor :couchdb_config_path
+    self.couchdb_config_path = "config/couchdb.yml"
+    self.couchdb_config = YAML.load(ERB.new(File.new(self.couchdb_config_path).read).result)[Rails.env]
 
     def admin_user
-      @config["username"]
+      couchdb_config["username"]
+    end
+    
+    def btc_api_uri
+      couchdb_config["btc_api_uri"]
     end
 
     def doc_changed?(old_doc, new_doc, &block)
@@ -45,19 +46,25 @@ module Hashbg
       ensure_admin_permissions!(db)
       update_doc! db, "_design/security", read_only_permissions
     end
+    
+    def couch_anonymous_host(database = "")
+      protocol = couchdb_config["protocol"]
+      host = couchdb_config["host"]
+      port = couchdb_config["port"]
+      "#{protocol}://#{host}:#{port}/#{database}"
+    end
 
-    def couch_host(database = "")
-      init_config
-      protocol = @config["protocol"]
-      username = @config["username"]
-      password = @config["password"]
+    def couch_admin_host(database = "")
+      protocol = couchdb_config["protocol"]
+      username = couchdb_config["username"]
+      password = couchdb_config["password"]
       if username && password
         auth = "#{username}:#{password}@"
       else
         auth = ""
       end
-      host = @config["host"]
-      port = @config["port"]
+      host = couchdb_config["host"]
+      port = couchdb_config["port"]
       "#{protocol}://#{auth}#{host}:#{port}/#{database}"
     end
 

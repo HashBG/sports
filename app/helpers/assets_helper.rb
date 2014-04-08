@@ -18,7 +18,7 @@ module AssetsHelper
     if Rails.env == "production"
       "couchdb/leagues"
     else
-      "#{couch_host}leagues/_all_docs?include_docs=true&endkey=%22_%22"
+      "#{couch_anonymous_host}leagues/_all_docs?include_docs=true&endkey=%22_%22"
     end
   end
   
@@ -27,7 +27,7 @@ module AssetsHelper
     if Rails.env == "production"
       "couchdb/league/"
     else
-      couch_host
+      couch_anonymous_host
     end
   end
   

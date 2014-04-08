@@ -7,18 +7,15 @@ class BetController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:received_btc_amount]
   
   def initialize
-    super
-    @db ||= CouchRest.database!(couch_host("bets"))
+    @db ||= CouchRest.database!(couch_admin_host("bets"))
     ensure_read_only_db!(@db)
   end
     
   def bet_with_btc
-    #btc_address = RestClient.post "http://87.117.226.162/WebApi/GetAddress.aspx",  {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
     begin
-      json = RestClient.post "http://10.10.10.66/WebApi/GetAddress.aspx", {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
+      json = RestClient.post btc_api_uri, {bets: transformed_params}.to_json, :content_type => :json, :accept => :json
       response = JSON.parse json
     rescue => e
-      debugger
       response = {}
       response["error"] = "Invalid response from bitcoin address server: #{e.message}"
       logger.error("Could not connect to btc_address server: " + e.message)

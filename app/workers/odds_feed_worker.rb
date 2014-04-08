@@ -102,7 +102,7 @@ class OddsFeedWorker
   
   def update_matches(db_name, matches)
     logger.info "updating matches for #{db_name}."
-    db = CouchRest.database!(couch_host(db_name))
+    db = CouchRest.database!(couch_admin_host(db_name))
     ensure_read_only_db!(db)
     
     existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
@@ -124,7 +124,7 @@ class OddsFeedWorker
   def perform
     odds_feed, leagues_feed = load_odds_feed
     
-    leagues_db = CouchRest.database!(couch_host("leagues"))
+    leagues_db = CouchRest.database!(couch_admin_host("leagues"))
     ensure_admin_permissions!(leagues_db)
 
     # consider using bulk edit for leagues
