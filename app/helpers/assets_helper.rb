@@ -1,4 +1,8 @@
+require 'hashbg/couchdb_base'
+
 module AssetsHelper
+  include Hashbg::CouchdbBase
+  
   def coefficient_button(variable, bet_type, bet_result, modifier = nil)
     r = '<button type="button" class="btn btn-default btn-sm" ng-click="'
 
@@ -14,7 +18,7 @@ module AssetsHelper
     if Rails.env == "production"
       "couchdb/leagues"
     else
-      "http://127.0.0.1:5984/leagues/_all_docs?include_docs=true&endkey=%22_%22"
+      "#{couch_host}leagues/_all_docs?include_docs=true&endkey=%22_%22"
     end
   end
   
@@ -23,7 +27,7 @@ module AssetsHelper
     if Rails.env == "production"
       "couchdb/league/"
     else
-      "http://127.0.0.1:5984/"
+      couch_host
     end
   end
   
