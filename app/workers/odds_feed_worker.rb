@@ -19,8 +19,11 @@ class OddsFeedWorker
     leagues_feed = {}
     
     feed_tick = Redis.current.get("FeedTick").to_i
+    puts "OLD TICK: #{feed_tick}"
     feed = Hashbg::Apis.get_odds_feed(feed_tick)
     Redis.current.set("FeedTick", feed["FeedTick"])
+    puts "NEW TICK: #{feed_tick}"
+    debugger
     
     # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
     feed["Feed: "].each do |distributor_name, sports|
@@ -132,7 +135,7 @@ class OddsFeedWorker
     end
   end
   
-  def perform
+  def load_feed_and_update_couchdb
     odds_feed, leagues_feed = load_odds_feed
     
     leagues_db = CouchRest.database!(couch_admin_host("leagues"))
@@ -146,6 +149,21 @@ class OddsFeedWorker
       league_from_feed["db_name"] = db_name
 
       update_doc!(leagues_db, league_name, league_from_feed)
+    end
+  end
+  
+  def perform
+    mutex = Redis::Mutex.new(:load_feed_and_update_couchdb)
+    if mutex.lock
+      begin
+        load_feed_and_update_couchdb()
+      rescue => e
+        logger.error("Updating couchdb failed: #{e.message}")
+      ensure
+        mutex.unlock
+      end
+    else
+      logger.info "Skipped a worker"
     end
   end
 end

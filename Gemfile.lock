@@ -118,6 +118,10 @@ GEM
     rdoc (4.1.1)
       json (~> 1.4)
     redis (3.0.7)
+    redis-classy (1.2.0)
+      redis-namespace (~> 1.0)
+    redis-mutex (2.1.1)
+      redis-classy (~> 1.2)
     redis-namespace (1.4.1)
       redis (~> 3.0.4)
     rest-client (1.6.7)
@@ -207,6 +211,7 @@ DEPENDENCIES
   mysql2
   node
   rails (= 4.0.4)
+  redis-mutex
   rspec-rails
   rvm-capistrano
   sass-rails (~> 4.0.2)

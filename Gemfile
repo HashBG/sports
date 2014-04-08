@@ -63,6 +63,7 @@ gem 'yajl-ruby'
 gem 'sidekiq'
 gem 'sidekiq-failures'
 gem 'capistrano-sidekiq'
+gem 'redis-mutex'
 gem 'sinatra' # required by webinterface
 gem 'sidetiq'
 
