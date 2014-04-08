@@ -1,0 +1,7 @@
+---
+:concurrency: 25
+:pidfile: tmp/pids/sidekiq.pid
+production:
+  :concurrency: 25
+:queues:
+  - [odds_feed, 3]
