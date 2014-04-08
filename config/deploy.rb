@@ -15,6 +15,8 @@ set :scm, "git"
 set :repository, "git@github.com:HashBG/sports.git"
 set :branch, "master"
 
+set :sidekiq_env, 'production'
+
 #set :linked_files, %w{config/database.yml config/couchdb.yml}
 
 default_run_options[:pty] = true

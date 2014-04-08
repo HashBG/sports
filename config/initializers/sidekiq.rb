@@ -1,1 +1,0 @@
-Sidekiq::Client.push('class' => 'OddsFeedWorker', 'args' => [])

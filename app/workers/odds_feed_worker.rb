@@ -90,6 +90,7 @@ class OddsFeedWorker
   def build_odds_doc(match_def)
     r = {}
     match_def[3].each do |bet_type, handycap, odds|
+      raise "Malformed match: #{match_def}" unless odds
       case bet_type
       when "FullOver/Under", "FullAH", "Full1X2 Handicap"
         r[bet_type] = complex_coefficient(odds)
@@ -104,22 +105,30 @@ class OddsFeedWorker
   
   def update_matches(db_name, matches)
     logger.info "updating matches for #{db_name}."
-    db = CouchRest.database!(couch_admin_host(db_name))
-    ensure_read_only_db!(db)
-    
-    existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
-    
-    # TODO use bulk update
-    matches.each do |match|
-      new_doc = build_odds_doc(match)
+    begin
+      db = CouchRest.database!(couch_admin_host(db_name))
+      ensure_read_only_db!(db)
       
-      match_id = build_match_id(match)
-      if existing_entries.include? match_id
-        update_doc!(db, match_id, new_doc)
-      else
-        new_doc["_id"] = match_id
-        db.save_doc new_doc 
+      existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
+      
+      # TODO use bulk update
+      matches.each do |match|
+        match_id = build_match_id(match)
+        begin
+          new_doc = build_odds_doc(match)
+          
+          if existing_entries.include? match_id
+            update_doc!(db, match_id, new_doc)
+          else
+            new_doc["_id"] = match_id
+            db.save_doc new_doc 
+          end
+        rescue => me
+          logger.error("Could not update match #{match_id}: #{me.message}")
+        end
       end
+    rescue => e
+      logger.error("Could not update database #{db_name}: #{e.message}")
     end
   end
   
@@ -130,7 +139,7 @@ class OddsFeedWorker
     ensure_admin_permissions!(leagues_db)
         
     odds_feed.each do |league_name, matches|
-      db_name = league_name.gsub(/[\ \.]/,"_").underscore
+      db_name = league_name.gsub(/[\ \.\&]/,"_").underscore
       update_matches(db_name, matches)
       
       league_from_feed = leagues_feed[league_name]
