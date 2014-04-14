@@ -57,9 +57,13 @@ gem 'bootstrap-sass'
 
 gem 'couchrest'
 
+gem 'yajl-ruby'
+
 # worker
 gem 'sidekiq'
 gem 'sidekiq-failures'
+gem 'capistrano-sidekiq'
+gem 'redis-mutex'
 gem 'sinatra' # required by webinterface
 gem 'sidetiq'
 

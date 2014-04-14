@@ -17,5 +17,6 @@
 
 /config/couchdb.yml
 /config/database.yml
+/config/apis.yml
 
 

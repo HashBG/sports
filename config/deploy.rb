@@ -1,6 +1,6 @@
 require "bundler/capistrano"
 require "rvm/capistrano"
-#require 'sidekiq/capistrano'
+require 'capistrano/sidekiq'
 
 server "188.226.193.114", :web, :app, :db, primary: true
 
@@ -14,6 +14,8 @@ set :use_sudo, false
 set :scm, "git"
 set :repository, "git@github.com:HashBG/sports.git"
 set :branch, "master"
+
+set :sidekiq_env, 'production'
 
 #set :linked_files, %w{config/database.yml config/couchdb.yml}
 
@@ -36,6 +38,7 @@ namespace :deploy do
     run "mkdir -p #{shared_path}/config"
     put File.read("config/database.example.yml"), "#{shared_path}/config/database.yml"
     put File.read("config/couchdb.example.yml"), "#{shared_path}/config/couchdb.yml"
+    put File.read("config/apis.example.yml"), "#{shared_path}/config/apis.yml"
     puts "Now edit the config files in #{shared_path}."
   end
   after "deploy:setup", "deploy:setup_config"
@@ -43,6 +46,7 @@ namespace :deploy do
   task :symlink_config, roles: :app do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{shared_path}/config/couchdb.yml #{release_path}/config/couchdb.yml"
+    run "ln -nfs #{shared_path}/config/apis.yml #{release_path}/config/apis.yml"
   end
   after "deploy:finalize_update", "deploy:symlink_config"
 

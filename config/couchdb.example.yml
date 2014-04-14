@@ -3,7 +3,8 @@ development:
   host: 127.0.0.1
   port: 5984
   username: admin
-  password: 
+  password:
+  btc_api_uri: "http://10.10.10.66/WebApi/GetAddress.aspx"
   
 production:
   protocol: 'http'
@@ -11,3 +12,4 @@ production:
   port: 5984
   username: admin
   password: 
+  btc_api_uri:

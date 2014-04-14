@@ -1,0 +1,12 @@
+development:
+  btc_api:
+    location: "http://10.10.10.66/WebApi/GetAddress.aspx"
+  odds_feed:
+    type: file
+    location: "db/fixtures/OddsFeed.json"
+
+production:
+  btc_api:
+    location: "http://87.117.226.162/WebApi/GetAddress.aspx"
+  odds_feed:
+    location: "http://www.oddstorm.com/api_new/api/OddsFeed"

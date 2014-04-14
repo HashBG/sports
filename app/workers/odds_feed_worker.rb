@@ -1,86 +1,39 @@
-require 'couchrest'
+require 'hashbg/couchdb_base'
 
 class OddsFeedWorker
   
+  include Hashbg::CouchdbBase
+  
   include Sidekiq::Worker
-  include Sidetiq::Schedulable
-  
   sidekiq_options :queue => :odds_feed
+  
+  include Sidetiq::Schedulable
 
-  # as long as we don't download data, no reoccurrence
-  #recurrence {
-  #  minutely
-  #}
-  
-  def initialize
-    @config = YAML.load(ERB.new(File.new(config_path).read).result)[Rails.env]
-  end
-  
-  def config_path
-    "config/couchdb.yml"
-  end
-  
-  def admin_user
-    @config["username"]
-  end
-  
-  def doc_changed?(old_doc, new_doc, &block)
-    if (diff = old_doc.to_hash.diff(new_doc).except("_id","_rev")).present?
-      block.call diff
-    end
-  end
-  
-  def update_doc!(db, doc_id, new_doc)
-    begin
-      old_doc = db.get(doc_id)
-      doc_changed?(old_doc, new_doc) do |diff|
-        new_doc["_id"] = old_doc["_id"] || doc_id
-        new_doc["_rev"] = old_doc["_rev"] if old_doc["_rev"] 
-        db.save_doc new_doc
-        logger.info "updated document #{doc_id}" 
-      end
-    rescue RestClient::ResourceNotFound => nfe
-      new_doc["_id"] = doc_id
-      db.save_doc new_doc
-      logger.info "created document #{doc_id}"
-    end
-  end
-  
-  def ensure_leagues_db_permissions!(db)
-    update_doc! db, "_security", leagues_db_permissions
-  end
-  
-  def ensure_read_only_db!(db)
-    update_doc! db, "_design/security", read_only_permissions
-  end
-  
-  def couch_host(database = "")
-    protocol = @config["protocol"]
-    username = @config["username"]
-    password = @config["password"]
-    if username && password
-      auth = "#{username}:#{password}@"
-    else
-      auth = ""
-    end
-    host = @config["host"]
-    port = @config["port"]
-    "#{protocol}://#{auth}#{host}:#{port}/#{database}"
-  end
+  recurrence {
+    hourly.minute_of_hour(*((0..11).to_a.map{|d|d*5}))
+  }
   
   def load_odds_feed
     logger.info "load and parse feed"
     odds_feed = {}
     leagues_feed = {}
-
-    feed = JSON.parse(File.read('db/fixtures/OddsFeed.json'))
-    # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
-    feed["Feed: "].each do |distributor_name, sports|
-      distributor_name == "Bet365" && sports.each do |sport_name, country_scopes|
-        country_scopes.each do |country_scope, leagues|
-          leagues.each do |league_name, matches|
-            odds_feed[league_name] = matches
-            leagues_feed[league_name] = {"country" => country_scope}
+    
+    feed_tick = Redis.current.get("FeedTick")
+    if feed_tick
+      feed_tick = feed_tick.to_i + 1
+    end
+    feed = Hashbg::Apis.get_odds_feed(feed_tick)
+    Redis.current.set("FeedTick", feed["FeedTick"])
+    
+    if feed["Feed: "]
+      # feed.keys => ["Feed: ", "FeedDateTime", "FeedTick", "Generated In"]
+      feed["Feed: "].each do |distributor_name, sports|
+        distributor_name == "Bet365" && sports.each do |sport_name, country_scopes|
+          country_scopes.each do |country_scope, leagues|
+            leagues.each do |league_name, matches|
+              odds_feed[league_name] = matches
+              leagues_feed[league_name] = {"country" => country_scope}
+            end
           end
         end
       end
@@ -142,6 +95,7 @@ class OddsFeedWorker
   def build_odds_doc(match_def)
     r = {}
     match_def[3].each do |bet_type, handycap, odds|
+      raise "Malformed match: #{match_def}" unless odds
       case bet_type
       when "FullOver/Under", "FullAH", "Full1X2 Handicap"
         r[bet_type] = complex_coefficient(odds)
@@ -156,69 +110,67 @@ class OddsFeedWorker
   
   def update_matches(db_name, matches)
     logger.info "updating matches for #{db_name}."
-    db = CouchRest.database!(couch_host(db_name))
-    ensure_read_only_db!(db)
-    
-    existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
-    
-    # TODO use bulk update
-    matches.each do |match|
-      new_doc = build_odds_doc(match)
+    begin
+      db = CouchRest.database!(couch_admin_host(db_name))
+      ensure_read_only_db!(db)
       
-      match_id = build_match_id(match)
-      if existing_entries.include? match_id
-        update_doc!(db, match_id, new_doc)
-      else
-        new_doc["_id"] = match_id
-        db.save_doc new_doc 
+      existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
+      
+      # TODO use bulk update
+      matches.each do |match|
+        match_id = build_match_id(match)
+        begin
+          new_doc = build_odds_doc(match)
+          
+          if existing_entries.include? match_id
+            update_doc!(db, match_id, new_doc)
+          else
+            new_doc["_id"] = match_id
+            db.save_doc new_doc 
+          end
+        rescue => me
+          logger.error("Could not update match #{match_id}: #{me.message}")
+        end
       end
+    rescue => e
+      logger.error("Could not update database #{db_name}: #{e.message}")
     end
   end
   
-  def build_league_doc(league_name, db_name)
-    {"_id" => league_name, "db_name" => db_name}
+  def load_feed_and_update_couchdb
+    odds_feed, leagues_feed = load_odds_feed
+    if odds_feed.present? && leagues_feed.present?
+      
+      leagues_db = CouchRest.database!(couch_admin_host("leagues"))
+      ensure_admin_permissions!(leagues_db)
+          
+      odds_feed.each do |league_name, matches|
+        db_name = league_name.gsub(/[\ \.\&]/,"_").underscore
+        update_matches(db_name, matches)
+        
+        league_from_feed = leagues_feed[league_name]
+        league_from_feed["db_name"] = db_name
+  
+        update_doc!(leagues_db, league_name, league_from_feed)
+      end
+    else
+      logger.info "feed loaded but no new data"
+    end
   end
   
   def perform
-    odds_feed, leagues_feed = load_odds_feed
-    
-    leagues_db = CouchRest.database!(couch_host("leagues"))
-    ensure_leagues_db_permissions!(leagues_db)
-
-    # consider using bulk edit for leagues
-    #leagues = leagues_db.all_docs(endkey: "_")["rows"]
-        
-    odds_feed.each do |league_name, matches|
-      db_name = league_name.gsub(/[\ \.]/,"_").underscore
-      update_matches(db_name, matches)
-      
-      league_from_feed = leagues_feed[league_name]
-      league_from_feed["db_name"] = db_name
-
-      update_doc!(leagues_db, league_name, league_from_feed)
+    mutex = Redis::Mutex.new(:load_feed_and_update_couchdb)
+    if mutex.lock
+      begin
+        load_feed_and_update_couchdb()
+      rescue => e
+        logger.error("Updating couchdb failed: #{e.message}")
+      ensure
+        mutex.unlock
+      end
+    else
+      logger.info "Skipped a worker"
     end
   end
-  
-  def leagues_db_permissions
-    {"admins" => {
-      "names" => [admin_user], 
-      "roles" => [admin_user]
-    }, "readers" => {
-      "names" => [],
-      "roles" => []
-    }}
-  end
-  
-  def read_only_permissions
-    {
-      "validate_doc_update" => 
-      <<-JAVASCRIPT
-        function(new_doc, old_doc, userCtx) {
-          if(!userCtx || userCtx.name != "#{admin_user}") {
-            throw({forbidden: "Bad user"});
-          }
-        }
-      JAVASCRIPT
-    }
-  end
 end
+
