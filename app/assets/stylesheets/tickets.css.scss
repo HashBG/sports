@@ -11,7 +11,7 @@
     border-left: 0px;
     
     tr {
-      @include gradient-vertical(#333, #345);
+      @include gradient-vertical($well-bg, $well-bg-right);
     }
     
   }

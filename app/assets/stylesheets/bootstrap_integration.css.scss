@@ -1,10 +1,12 @@
 
 
-$link-color:  gray;
-$body-bg:     #223344;
-$text-color:  lightgray;
+$link-color:  black;
+$body-bg:     #DDD;
+$body-bg-right: #FFF;
+$text-color:  black;
 
-$well-bg:       #111111;
+$well-bg:       darken($body-bg, 10%);
+$well-bg-right: darken($body-bg-right, 10%);
 $well-border:   lighten($well-bg, 15);
 
 $table-bg-hover: lighten($body-bg, 7);
@@ -17,16 +19,17 @@ $navbar-default-bg: lighten($well-bg, 10);
 $navbar-default-border: darken($navbar-default-bg, 6.5%);
 $navbar-default-link-hover-color: lighten($text-color, 10);
 
-$modal-content-bg: $body-bg;
+$modal-content-bg:  lighten($body-bg, 15%);
 
 @import "bootstrap";
 @import "leagues";
 @import "matches";
 @import "tickets";
+@import "navbar";
 
 body { 
   padding-top: 50px;
-  @include gradient-horizontal($body-bg, #003366);
+  @include gradient-horizontal($body-bg, $body-bg-right);
 }
 
 a, .nav-row {
@@ -35,9 +38,9 @@ a, .nav-row {
 
 .well {
   tr {
-    @include gradient-vertical(#111, #123);
+    @include gradient-vertical($well-bg, $well-bg-right);
   }
   .table > tbody + tbody {
-    border-top: 2px solid #111;
+    border-top: 2px solid $well-bg;
   }
 }
