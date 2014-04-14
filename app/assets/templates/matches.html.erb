@@ -11,7 +11,10 @@
 	</thead>
 	<tbody ng-repeat="(matchKey, match) in matches">
 		<tr>
-			<td>{{ printMatchDate(match._id) }}</td>
+			<td class="match-date">
+			  {{ printMatchDate(match._id) | date:'longDate' }}<br>
+			  {{ printMatchDate(match._id) | date:'shortTime' }}
+			</td>
 			<td>{{ printMatch(match._id) }}</td>
 			<% ["1", "X", "2"].each do |bet_result| %>
 			<td><%= coefficient_button("match", "Full1X2", bet_result) %></td>
@@ -28,7 +31,7 @@
 			<table class="table" ng-if="betType === 'Full1X2 Handicap'">
 				<thead>
 					<tr>
-						<th></th>
+						<th>{{ betType }}</th>
 						<th>1</th>
 						<th>X</th>
 						<th>2</th>
@@ -36,7 +39,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="(modifier, odds) in detail">
-						<td>{{ betType }} / {{modifier}}</td>
+						<td>{{modifier}}</td>
 						<% ["1", "X", "2"].each do |bet_result| %>
 						<td><%= coefficient_button("match", "Full1X2 Handicap", bet_result, "modifier") %></td>
 						<% end %>
@@ -46,14 +49,14 @@
 			<table class="table" ng-if="betType === 'FullAH'">
 				<thead>
 					<tr>
-						<th></th>
+						<th>{{ betType }}</th>
 						<th>AH1</th>
 						<th>AH2</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="(modifier, odds) in detail">
-						<td>{{ betType }} / {{modifier}}</td>
+						<td>{{modifier}}</td>
 						<% ["AH1", "AH2"].each do |bet_result| %>
 						<td><%= coefficient_button("match", "FullAH", bet_result, "modifier") %></td>
 						<% end %>
@@ -63,7 +66,7 @@
 			<table class="table" ng-if="betType === 'FullDoubleChance'">
 				<thead>
 					<tr>
-						<th></th>
+						<th>{{ betType }}</th>
 						<th>12</th>
 						<th>1X</th>
 						<th>X2</th>
@@ -71,7 +74,7 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>{{ betType }}</td>
+						<td></td>
 						<% ["12", "1X", "X2"].each do |bet_result| %>
 						<td><%= coefficient_button("match", "FullDoubleChance", bet_result) %></td>
 						<% end %>
@@ -81,14 +84,14 @@
 			<table class="table" ng-if="betType === 'FullOver/Under'">
 				<thead>
 					<tr>
-						<th></th>
+						<th>{{ betType }}</th>
 						<th>Over</th>
 						<th>Under</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="(modifier, odds) in detail">
-						<td>{{ betType }} / {{modifier}}</td>
+						<td>{{modifier}}</td>
 						<% ["Over", "Under"].each do |bet_result| %>
 						<td><%= coefficient_button("match", "FullOver/Under", bet_result, "modifier") %></td>
 						<% end %>

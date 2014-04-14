@@ -18,12 +18,15 @@ module Hashbg
       end
     end
 
-    def update_doc!(db, doc_id, new_doc)
+    def update_doc!(db, doc_id, new_doc, merge = false)
       begin
         old_doc = db.get(doc_id)
         doc_changed?(old_doc, new_doc) do |diff|
           new_doc["_id"] = old_doc["_id"] || doc_id
           new_doc["_rev"] = old_doc["_rev"] if old_doc["_rev"]
+          if merge
+            new_doc.merge! old_doc
+          end
           db.save_doc new_doc
           logger.info "updated document #{doc_id}"
         end

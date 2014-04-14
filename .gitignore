@@ -18,5 +18,6 @@
 /config/couchdb.yml
 /config/database.yml
 /config/apis.yml
+/config/bitcoin.yml
 
-
+.bitcoin
