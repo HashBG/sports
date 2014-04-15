@@ -31,6 +31,7 @@ $modal-content-bg:  lighten($body-bg, 15%);
 body { 
   padding-top: 50px;
   @include gradient-horizontal($body-bg, $body-bg-right);
+  overflow: scroll;
 }
 
 a, .nav-row {
