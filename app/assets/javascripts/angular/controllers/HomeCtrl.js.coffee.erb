@@ -77,9 +77,12 @@
   $scope.printMatchDate = (match) ->
     match.split("/")[0]
 
-  $scope.printMatch = (match) ->
+  $scope.printMatch = (match, which) ->
     d = match.split("/")
-    d[1] + " v " + d[2]
+    if which?
+      d[which]
+    else
+      d[1] + " v " + d[2]
   
   $scope.printCoefficient = (matchKey, ticket) ->
     ticket.coefficient[$scope.oddsRepresentation]

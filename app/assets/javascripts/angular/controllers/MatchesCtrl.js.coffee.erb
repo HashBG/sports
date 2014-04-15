@@ -17,7 +17,6 @@
     
     data.rows.forEach (result) ->
       $scope.matches[result.doc["_id"]] = result.doc
-      $scope.matches[result.doc["_id"]]["currentCoefficient"] = result.doc.coefficient 
     
     $scope.pollMatches($scope.currentLeague())
   )
@@ -35,6 +34,12 @@
       $scope.detailsFor = null
     else
       $scope.setDetails(match)
+      for key of match 
+        if key not in ["_id", "_rev", "Full1X2"]
+          $scope.selectedBetType = key
+      
+  $scope.selectBetType = (betType) ->
+    $scope.selectedBetType = betType
       
   $scope.pollAddress = () ->
     if $scope.lastSeq
