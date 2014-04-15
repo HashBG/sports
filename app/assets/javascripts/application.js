@@ -19,6 +19,8 @@
 //= require angular-ui-bootstrap-tpls
 //= require angular-translate.min
 //= require angular-translate-loader-static-files.min
+//= require angular-moment.min
+//= require moment-with-langs.min
 //= require main
 //= require_tree .
 

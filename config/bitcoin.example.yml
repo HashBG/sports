@@ -1,0 +1,19 @@
+
+development:
+  user: btc
+  password: test
+  host: 127.0.0.1
+  port: 18338
+
+test:
+  user: btc
+  password: test
+  host: 127.0.0.1
+  port: 18338
+
+production:
+  user: 
+  password: 
+  host: 87.117.226.162
+  port: 18338
+

@@ -2,7 +2,7 @@
 <table class="table table-condensed" ng-show="showTickets()">
 	<tbody class="well" ng-repeat="(ticketKey, ticket) in selectedBets">
 		<tr>
-			<td>{{ printMatchDate(ticketKey) }}
+			<td>{{ printMatchDate(ticketKey) | amDateFormat:'LLLL' }}
   		  <i ng-click='removeBet(ticketKey)' class="remove-ticket glyphicon glyphicon-minus" ng-if="country == expanded"></i>
 		  </td>
 		</tr>
@@ -24,7 +24,7 @@
 	</tbody>
 	
 	<tbody>
-    <tr>
+    <tr class="row-bet">
       <td>
         <button class="btn btn-bet" ng-click="makeTheBid()">Make the bet!</button>
       </td>

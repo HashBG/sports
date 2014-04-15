@@ -6,7 +6,6 @@ module Hashbg
   
   module BitcoinBase
     
-    
     class BitcoinRPC
       def initialize(service_url)
         @uri = URI.parse(service_url)
@@ -34,34 +33,29 @@ module Hashbg
     mattr_accessor :bitcoin_config
     mattr_accessor :bitcoin_config_path
     self.bitcoin_config_path = "config/bitcoin.yml"
-    self.bitcoin_config = {
-      "user"=> "btc",
-      "password"=> "test",
-      "port"=> 18338,
-      "host"=> "127.0.0.1"
-    }
-    # YAML.load(ERB.new(File.new(self.couchdb_config_path).read).result)[Rails.env]
+    self.bitcoin_config = YAML.load(ERB.new(File.new(self.bitcoin_config_path).read).result)[Rails.env] 
     
     mattr_accessor :rpc_uri
     mattr_accessor :rpc
     self.rpc_uri = "http://#{self.bitcoin_config["user"]}:#{self.bitcoin_config["password"]}@#{self.bitcoin_config["host"]}:#{self.bitcoin_config["port"]}"
     self.rpc = Hashbg::BitcoinBase::BitcoinRPC.new(rpc_uri)
-=begin
-    def self.rpc_uri
-      debugger
-      "http://#{self.bitcoin_config["user"]}:#{self.bitcoin_config["password"]}@#{self.bitcoin_config["host"]}:#{self.bitcoin_config["port"]}"
-    end
-    
-    def self.rpc
-      BitcoinRPC.new(rpc_uri)
-    end
-=end
+
     def self.new_address!
       self.rpc.getnewaddress
     end
     
     def self.transaction(tid)
       self.rpc.gettransaction tid
+    end
+    
+    def self.sender_addresses(tid)
+      full_transaction = self.rpc.decoderawtransaction self.rpc.getrawtransaction(tid)
+      sender_addresses = []
+      full_transaction["vin"].each do |vin|
+        sender_transaction = self.rpc.decoderawtransaction self.rpc.getrawtransaction(vin["txid"])
+        sender_addresses += sender_transaction["vout"][vin['vout']]["scriptPubKey"]['addresses']
+      end
+      sender_addresses
     end
     
   end

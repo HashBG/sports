@@ -12,8 +12,8 @@
 	<tbody ng-repeat="(matchKey, match) in matches">
 		<tr>
 			<td class="match-date">
-			  {{ printMatchDate(match._id) | date:'longDate' }}<br>
-			  {{ printMatchDate(match._id) | date:'shortTime' }}
+			  {{ printMatchDate(match._id) | amDateFormat:'LL' }}<br>
+			  {{ printMatchDate(match._id) | amDateFormat:'LT' }}
 			</td>
 			<td>{{ printMatch(match._id) }}</td>
 			<% ["1", "X", "2"].each do |bet_result| %>

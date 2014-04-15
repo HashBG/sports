@@ -34,14 +34,21 @@ class BetController < ApplicationController
   end
   
   def received_btc_transaction
-    transaction = Hashbg::BitcoinBase.transaction(params["transaction"])
-    details = transaction["details"]
-    details.each do |detail|
-      if detail["category"] == "receive"
-        address = detail["address"]
-        update_received_payment!(address, {amount: detail["amount"], sender_address: "howto"}) 
-      end
+    tid = params["transaction"]
+    
+    transaction = Hashbg::BitcoinBase.transaction tid
+    
+    sender_addresses = Hashbg::BitcoinBase.sender_addresses tid
+    sender_address = sender_addresses[0] 
+    
+    transaction["details"].each do |detail|
+      address = detail["address"]
+      h = {"amount" => detail["amount"]}
+      h["sender_address"] = sender_address
+      
+      update_received_payment!(address, h)
     end
+    
     render json: "OK"
   end
   

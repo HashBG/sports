@@ -1,7 +1,7 @@
 #= depend_on_asset "matches.html"
 #= depend_on_asset "league_list.html"
 
-@hashbg_sports = angular.module('hashbg_sports', ['ngRoute','ui.bootstrap','pascalprecht.translate'])
+@hashbg_sports = angular.module('hashbg_sports', ['ngRoute','ui.bootstrap','angularMoment','pascalprecht.translate'])
 
 # otherwise here sets the default route
 @hashbg_sports.config(['$routeProvider', '$httpProvider', ($routeProvider, $httpProvider) ->

@@ -26,7 +26,7 @@
     <div class="row" ng-show='currentProgress==100'>
       <div id="qrcode" class="col-xs-6">
         <div id="qrcode"></div>
-        <div>{{ btc_address }}</div>
+        <div class="btc-address">{{ btc_address }}</div>
       </div>
       
       <div class="col-xs-6">
@@ -55,7 +55,8 @@
           </span>
           <span ng-show='paymentReceived()'>
             <div ng-if="receivedPayment.payment">
-              <h4>Received your wager from:<br>{{ receivedPayment.payment.sender_address }}</h4>
+              <h4>Received your wager from:</h4>
+              <div class="btc-address">{{ receivedPayment.payment.sender_address }}</div>
               <div>Amount: {{ receivedPayment.payment.amount }}</div>
             </div>
             <div ng-if="receivedPayment.error">

@@ -26,6 +26,7 @@ $modal-content-bg:  lighten($body-bg, 15%);
 @import "matches";
 @import "tickets";
 @import "navbar";
+@import "make_bid";
 
 body { 
   padding-top: 50px;
@@ -44,3 +45,4 @@ a, .nav-row {
     border-top: 2px solid $well-bg;
   }
 }
+

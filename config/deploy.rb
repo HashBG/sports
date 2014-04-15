@@ -39,6 +39,7 @@ namespace :deploy do
     put File.read("config/database.example.yml"), "#{shared_path}/config/database.yml"
     put File.read("config/couchdb.example.yml"), "#{shared_path}/config/couchdb.yml"
     put File.read("config/apis.example.yml"), "#{shared_path}/config/apis.yml"
+    put File.read("config/bitcoin.example.yml"), "#{shared_path}/config/bitcoin.yml"
     puts "Now edit the config files in #{shared_path}."
   end
   after "deploy:setup", "deploy:setup_config"
@@ -47,6 +48,7 @@ namespace :deploy do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{shared_path}/config/couchdb.yml #{release_path}/config/couchdb.yml"
     run "ln -nfs #{shared_path}/config/apis.yml #{release_path}/config/apis.yml"
+    run "ln -nfs #{shared_path}/config/bitcoin.yml #{release_path}/config/bitcoin.yml"
   end
   after "deploy:finalize_update", "deploy:symlink_config"
 
