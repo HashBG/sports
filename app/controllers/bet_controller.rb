@@ -36,20 +36,29 @@ class BetController < ApplicationController
   def received_btc_transaction
     tid = params["transaction"]
     
-    transaction = Hashbg::BitcoinBase.transaction tid
-    
-    sender_addresses = Hashbg::BitcoinBase.sender_addresses tid
-    sender_address = sender_addresses[0] 
-    
-    transaction["details"].each do |detail|
-      address = detail["address"]
-      h = {"amount" => detail["amount"]}
-      h["sender_address"] = sender_address
+    if transaction = Hashbg::BitcoinBase.transaction(tid)
       
-      update_received_payment!(address, h)
+      sender_addresses = Hashbg::BitcoinBase.sender_addresses tid
+      sender_address = sender_addresses[0]
+      receiver_addresses = []
+      
+      transaction["details"].each do |detail|
+        if detail["category"] == "receive"
+          address = detail["address"]
+          receiver_addresses << address
+          h = {"amount" => detail["amount"]}
+          h["sender_address"] = sender_address
+          
+          update_received_payment!(address, h)
+        end
+      end
+      
+      logger.info "Received payment for #{receiver_addresses} from #{sender_address}"
+      render json: "OK"
+    else
+      logger.info "Could not find transaction with ID #{tid}"
+      render json: "ERROR: Could not find transaction wit ID #{tid}"
     end
-    
-    render json: "OK"
   end
   
   private
@@ -59,7 +68,7 @@ class BetController < ApplicationController
   end
 
   def update_received_payment!(btc_address, payment)
-    update_doc!(@db, btc_address, {"payment" => payment}, true)
+    update_doc!(@db, btc_address, {"payment" => payment}, :merge => true, :only_update => true)
   end
   
 end

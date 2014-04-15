@@ -45,7 +45,11 @@ module Hashbg
     end
     
     def self.transaction(tid)
-      self.rpc.gettransaction tid
+      begin
+        self.rpc.gettransaction tid
+      rescue Hashbg::BitcoinBase::BitcoinRPC::JSONRPCError => e
+        nil
+      end
     end
     
     def self.sender_addresses(tid)

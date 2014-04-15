@@ -18,22 +18,28 @@ module Hashbg
       end
     end
 
-    def update_doc!(db, doc_id, new_doc, merge = false)
+    def update_doc!(db, doc_id, new_doc, options = {})
       begin
         old_doc = db.get(doc_id)
         doc_changed?(old_doc, new_doc) do |diff|
           new_doc["_id"] = old_doc["_id"] || doc_id
           new_doc["_rev"] = old_doc["_rev"] if old_doc["_rev"]
-          if merge
+          if options[:merge]
             new_doc.merge! old_doc
           end
           db.save_doc new_doc
           logger.info "updated document #{doc_id}"
+          true
         end
       rescue RestClient::ResourceNotFound => nfe
-        new_doc["_id"] = doc_id
-        db.save_doc new_doc
-        logger.info "created document #{doc_id}"
+        if options[:only_update]
+          false
+        else
+          new_doc["_id"] = doc_id
+          db.save_doc new_doc
+          logger.info "created document #{doc_id}"
+          true
+        end
       end
     end
 
