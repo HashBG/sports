@@ -24,9 +24,13 @@
   <span ng-if='! bet_error'>
     <progressbar ng-show='currentProgress && currentProgress != 100' class="progress-striped" value="currentProgress"></progressbar>
     <div class="row" ng-show='currentProgress==100'>
-      <div id="qrcode" class="col-xs-6">
+      <div class="col-xs-12">
+        <div class="btc-receiver-address">{{ btc_address }}<i class="glyphicon glyphicon-download" ng-click="copyToClipboard(btc_address)"></i></div>
+      </div>
+    </div>
+    <div class="row" ng-show='currentProgress==100'>
+      <div class="col-xs-6">
         <div id="qrcode"></div>
-        <div class="btc-address">{{ btc_address }}</div>
       </div>
       
       <div class="col-xs-6">

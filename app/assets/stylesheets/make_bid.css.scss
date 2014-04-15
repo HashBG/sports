@@ -1,3 +1,10 @@
 .btc-address {
-  font-size: 12px !important;
+  font-size: 12px;
+}
+
+.btc-receiver-address {
+  font-size: 25px;
+  i {
+    float: right;
+  }
 }
