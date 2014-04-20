@@ -1,0 +1,35 @@
+<form name="loginForm" class="login-form" ng-submit="login()" novalidate>
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">
+      &times;
+    </button>
+    <h4 class="modal-title">Login</h4>
+  </div>
+  <div class="modal-body">
+
+    <div id='login-form-messages' flash-alert active-class="in alert" class="fade" duration="0">
+      <button type="button" class="close" ng-click="hide()">&times;</button>
+      <span>{{flash.message}}</span>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="email">Email</label>
+      <div class="controls">
+        <input type="email" id="email" name="email" placeholder="Email" ng-model="login_user.email" ng-minlength="2" required>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="password">Password</label>
+      <div class="controls">
+        <input type="password" id="password" name="password" placeholder="Password" ng-model="login_user.password" ng-minlength="2" password-validate required>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit"  ng-disabled="loginForm.$invalid" class="btn">Login</button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -43,6 +43,11 @@ namespace :deploy do
     puts "Now edit the config files in #{shared_path}."
   end
   after "deploy:setup", "deploy:setup_config"
+  
+  task :bower_install, roles: :app do
+    run("cd #{release_path}; /usr/bin/env rake bower:install RAILS_ENV=#{rails_env}")   
+  end
+  before 'deploy:assets:precompile', "deploy:bower_install"
 
   task :symlink_config, roles: :app do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"

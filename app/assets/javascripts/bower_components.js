@@ -10,13 +10,16 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require jquery_ujs
-//= require bootstrap
-//= require turbolinks
-//= require bower_components
-//= require main
-//= require_tree ./angular
+//= require angular/angular
+//= require angular-route/angular-route
+//= require angular-bootstrap/ui-bootstrap-tpls
+//= require angular-translate/angular-translate
+//= require angular-translate-loader-static-files/angular-translate-loader-static-files.min
+//= require moment/min/moment-with-langs
+//= require angular-moment/angular-moment
+//= require angular-flash/dist/angular-flash
+//= require angular-devise/lib/devise
+//= require qrcode/lib/qrcode
 
 
 

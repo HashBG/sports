@@ -1,0 +1,16 @@
+{
+  "name": "hashbg-sports",
+  "angular-translate-loader-static-files": "*",
+  "dependencies": {
+    "angular": "~1.2.16",
+    "angular-translate": "~2.1.0",
+    "angular-moment": "~0.7.0",
+    "angular-flash": "~0.1.13",
+    "angular-devise": "~0.2.1",
+    "angular-route": "~1.2.16",
+    "angular-bootstrap": "~0.10.0",
+    "qrcode": "~1.0.1",
+    "angular-translate-loader-static-files": "~2.1.0",
+    "moment": "~2.6.0"
+  }
+}

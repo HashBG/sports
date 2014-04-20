@@ -1,7 +1,14 @@
 #= depend_on_asset "matches.html"
 #= depend_on_asset "league_list.html"
+#= depend_on_asset "dialogs/login.html"
 
-@hashbg_sports = angular.module('hashbg_sports', ['ngRoute','ui.bootstrap','angularMoment','pascalprecht.translate'])
+@hashbg_sports = angular.module 'hashbg_sports', [
+  'ngRoute','ui.bootstrap','angularMoment','pascalprecht.translate',
+  'angular-flash.service', 'angular-flash.flash-alert-directive',
+  'Devise'
+]
+
+
 
 # otherwise here sets the default route
 @hashbg_sports.config(['$routeProvider', '$httpProvider', ($routeProvider, $httpProvider) ->
@@ -17,6 +24,6 @@
     }).
     otherwise({
        controller: 'HomeCtrl'
-    }) 
+    })
 ])
 

@@ -1,4 +1,4 @@
-@hashbg_sports.controller('LangCtrl', ['$scope', '$translate', 'amMoment', ($scope, $translate, amMoment) ->
+@hashbg_sports.controller 'LangCtrl', ['$scope', '$translate', 'amMoment', ($scope, $translate, amMoment) ->
   
   $scope.changeLang = (key) ->
     amMoment.changeLanguage(key);
@@ -6,4 +6,4 @@
     
   $scope.currentLanguage = () ->
     $translate.use()
-])
+]

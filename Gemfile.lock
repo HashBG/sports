@@ -25,12 +25,14 @@ GEM
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
-    angular-ui-bootstrap-rails (0.10.0)
-    angularjs-rails (1.2.14)
+    angular_rails_csrf (1.0.1)
+      rails (>= 3, < 5)
     arel (4.0.2)
     atomic (1.1.16)
+    bcrypt (3.1.7)
     bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
+    bower-rails (0.7.1)
     builder (3.1.4)
     capistrano (2.15.5)
       highline
@@ -62,10 +64,19 @@ GEM
       debugger-ruby_core_source (~> 1.3.2)
     debugger-linecache (1.2.0)
     debugger-ruby_core_source (1.3.2)
+    devise (3.2.4)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     eventmachine (1.0.3)
     execjs (2.0.2)
+    gon (5.0.4)
+      actionpack (>= 2.3.0)
+      json
     highline (1.6.21)
     hike (1.2.3)
     i18n (0.6.9)
@@ -94,6 +105,7 @@ GEM
       net-ssh (>= 2.6.5)
     node (0.0.2)
       eventmachine
+    orm_adapter (0.5.0)
     polyglot (0.3.4)
     rack (1.5.2)
     rack-protection (1.5.2)
@@ -192,20 +204,24 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    warden (1.2.3)
+      rack (>= 1.0)
     yajl-ruby (1.2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  angular-ui-bootstrap-rails
-  angularjs-rails
+  angular_rails_csrf
   bootstrap-sass
+  bower-rails
   capistrano
   capistrano-sidekiq
   coffee-rails (~> 4.0.0)
   couchrest
   debugger
+  devise
+  gon
   jbuilder (~> 1.2)
   jquery-rails
   mysql2

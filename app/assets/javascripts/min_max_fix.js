@@ -1,4 +1,5 @@
-
+// as we removed the amount from the form, this is obsolete
+/*
 function isEmpty(value) {
   return angular.isUndefined(value) || value === '' || value === null || value !== value;
 }
@@ -52,4 +53,4 @@ this.hashbg_sports.directive('ngMax', function() {
         }
     };
 });
-
+*/

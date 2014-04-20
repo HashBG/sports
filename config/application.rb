@@ -26,5 +26,10 @@ module HashbgSports
     # config.i18n.default_locale = :de
     
     config.assets.register_mime_type('text/html', '.html')
+    
+    config.to_prepare do
+      DeviseController.respond_to :html, :json
+      Devise::SessionsController.layout "devise"
+    end
   end
 end

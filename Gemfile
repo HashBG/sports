@@ -50,8 +50,6 @@ gem 'node', platforms: :ruby
 
 gem "rspec-rails"
 
-gem 'angularjs-rails'
-gem 'angular-ui-bootstrap-rails'
 
 gem 'bootstrap-sass'
 
@@ -74,4 +72,7 @@ group :development do
   gem 'rvm-capistrano'
 end
 
-
+gem 'devise'
+gem "bower-rails"
+gem 'angular_rails_csrf'
+gem 'gon'

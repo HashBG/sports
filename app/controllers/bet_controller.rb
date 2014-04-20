@@ -13,9 +13,9 @@ class BetController < ApplicationController
   end
 
   def bet_with_btc
-    btc_address = Hashbg::BitcoinBase.new_address!
-    
-    if btc_address
+    begin
+      btc_address = Hashbg::BitcoinBase.new_address!
+
       store_btc_address_to_listen!(btc_address)
       answer = {
         min: 0.001,
@@ -24,12 +24,8 @@ class BetController < ApplicationController
         btc_address: btc_address
       }
       render json: answer
-    else
-      msg = "No bitcoin address available"
-      if response["error"]
-        msg = response["error"]
-      end
-      render json: {error: msg}
+    rescue => e
+      render json: {error: e.message}
     end
   end
   

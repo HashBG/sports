@@ -1,7 +1,23 @@
-@hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', '$modal', ($scope, $location, $http, $modal) ->
+@hashbg_sports.controller 'HomeCtrl', ['$scope', '$location', '$http', '$modal', 'flash', 'Auth', ($scope, $location, $http, $modal,flash,Auth) ->
   if window.location.hash == ""
     $location.path('').replace()
-    
+  
+  # angular-flash has the following levels: success, info, warn, error
+  if window.gon.flash?
+    for level, message of window.gon.flash
+      if level == "alert"
+        flash["error"] = message
+      else if level == "notice"
+        flash["success"] = message
+      else
+        flash["info"] = message
+  
+  if window.gon.current_user?
+    Auth._currentUser = window.gon.current_user
+    $scope.login_display = window.gon.current_user.email
+  
+  $scope.isAuthenticated = Auth.isAuthenticated
+
   $scope.selectedBets = {}
   $scope.oddsRepresentations = ["decimal", "uk", "us"]
   $scope.oddsRepresentation = "decimal"
@@ -146,16 +162,33 @@
     $scope.oddsRepresentation = representation
     
   $scope.makeTheBid = () ->
-    modalInstance = $modal.open(
+    modalInstance = $modal.open
       templateUrl: "<%= asset_path('dialogs/make_bid.html') %>"
       controller: 'BetCtrl'
       resolve:
         selectedBets: ->
           $scope.selectedBets
+    
+  $scope.logout = ->
+    flash.clean()
+    Auth.logout().then((user) ->
+      flash["success"] = "You have been logged out."
+    , (error) ->
+      flash["error"] = "There was an error logging out: " + error
     )
     
+  $scope.loginDialog = () ->
+    modalInstance = $modal.open
+      templateUrl: "<%= asset_path('dialogs/login.html') %>"
+      controller: 'SessionsCtrl'
+  
   $scope.copyToClipboard = (text) ->
     window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
 
+  #$scope.$on "devise:unauthorized", (event, xhr, deferred) ->
+  #  if $scope.login_display
+  #    $scope.loginDialog()
+  #  else
+  
 ]
 

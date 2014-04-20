@@ -1,4 +1,4 @@
-<table class="table table-condensed">
+<table ng-controller="LeaguesCtrl" class="table table-condensed">
 	<tbody ng-repeat="(country, leagues) in leaguesMap">
 		<tr class="nav-row" ng-click="expand(country)">
 			<td><a href="">{{ country }}</a>

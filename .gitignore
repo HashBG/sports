@@ -20,4 +20,7 @@
 /config/apis.yml
 /config/bitcoin.yml
 
-.bitcoin
+/vendor/assets/bower_components
+
+/.bitcoin
+
