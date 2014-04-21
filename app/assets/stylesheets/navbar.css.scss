@@ -1,0 +1,21 @@
+.navbar-default {
+    background: #282828;
+    border-color: #282828;
+}
+
+.navbar-brand {
+    height: 65px;
+}
+
+.navbar-default .navbar-nav > li > a {
+    font-size: 18px;
+    line-height: 35px;
+    color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #ffffff;
+  background-color: transparent;
+  text-decoration: underline;
+}

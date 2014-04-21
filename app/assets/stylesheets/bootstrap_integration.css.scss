@@ -1,5 +1,4 @@
 
-
 $link-color:  black;
 $body-bg:     #DDD;
 $body-bg-right: #FFF;
@@ -14,11 +13,6 @@ $table-border-color: lighten($well-bg, 7);
 
 $grid-float-breakpoint: 320px;
 
-$navbar-default-color: lighten($text-color, 10);
-$navbar-default-bg: lighten($well-bg, 10);
-$navbar-default-border: darken($navbar-default-bg, 6.5%);
-$navbar-default-link-hover-color: lighten($text-color, 10);
-
 $modal-content-bg:  lighten($body-bg, 15%);
 
 @import "bootstrap";
@@ -29,9 +23,15 @@ $modal-content-bg:  lighten($body-bg, 15%);
 @import "make_bid";
 @import "login";
 
-body { 
-  padding-top: 50px;
-  @include gradient-horizontal($body-bg, $body-bg-right);
+/*------------------------------------*\
+    $BASE
+\*------------------------------------*/
+
+body {
+    padding-top: 100px;
+    font-family: 'Oxygen', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 .main {
@@ -68,3 +68,4 @@ a, .nav-row {
   background-color: #f2dede;
   border-color: #eed3d7;
 }
+

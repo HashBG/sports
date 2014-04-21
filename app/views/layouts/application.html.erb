@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html ng-app="hashbg_sports">
-	<head>
-		<title>HashBG Sports</title>
-		<%= include_gon %>
-		<%= stylesheet_link_tag    "application", media: "all" %>
-		<%= javascript_include_tag "application" %>
-		<%= csrf_meta_tags %>
-	</head>
-	<body ng-controller="HomeCtrl">
-		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
-			  
-			  <ul class="nav navbar-nav">
-			    <li><a href="#/faq">{{'FAQ_TITLE' | translate}}</a></li>
-		    </ul>
-			  
-				<ul class="nav navbar-nav navbar-right">
-	        <li class="dropdown">
-	          <a class="dropdown-toggle" data-toggle="dropdown">{{ oddsRepresentation | translate }}<b class="caret"></b></a>
-	          <ul class="dropdown-menu">
-	            <li ng-repeat="key in oddsRepresentations"><a ng-click="switchOddsRepresentation(key)">{{ key | translate }}</a></li>
-	          </ul>
-	        </li>
+  <head>
+    <title>HashBG Sports</title>
+    <%= include_gon %>
+    <%= stylesheet_link_tag    "application", media: "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body ng-controller="HomeCtrl">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        
+        <div class="navbar-header">
+          <a href="/" class="navbar-brand">
+            <img alt="DistruptiveBets logo" src="assets/brand/logo.png" class="logo">
+          </a>
+        </div>
+        
+        <ul class="nav navbar-nav">
+          <li><a href="#/faq">{{'FAQ_TITLE' | translate}}</a></li>
+        </ul>
+        
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">{{ oddsRepresentation | translate }}<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li ng-repeat="key in oddsRepresentations"><a ng-click="switchOddsRepresentation(key)">{{ key | translate }}</a></li>
+            </ul>
+          </li>
           
           <li class="dropdown" ng-controller="LangCtrl">
             <a class="dropdown-toggle" data-toggle="dropdown">{{ currentLanguage() | translate }}<b class="caret"></b></a>
@@ -40,31 +46,31 @@
           <li ng-if='!isAuthenticated()'>
             <a ng-click='loginDialog()'>Login</a>
           </li>
-	      </ul>
-			</div>
-		</nav>
+        </ul>
+      </div>
+    </nav>
 
-		<div class="container">
-			<div class="row" >
-				<div class="well leagues col-xs-2">
-					<div ng-include src="'<%= asset_path('league_list.html') %>'"></div>
-				</div>
+    <div class="container">
+      <div class="row" >
+        <div class="well leagues col-xs-2">
+          <div ng-include src="'<%= asset_path('league_list.html') %>'"></div>
+        </div>
 
-				<div class="col-xs-7">
-  		    
+        <div class="col-xs-7">
+          
           <div flash-alert active-class="in alert" class="fade" duration>
             <button type="button" class="close" ng-click="hide()">&times;</button>
             <span>{{flash.message}}</span>
           </div>
           <div ng-view>
-  				  This site requires JavaScript
+            This site requires JavaScript
           </div>
-				</div>
-				
-				<div id="ticket-sidebar" class="tickets col-xs-3">
-					<div ng-include src="'<%= asset_path('tickets.html') %>'"></div>
-				</div>
-			</div>
-		</div>
-	</body>
+        </div>
+        
+        <div id="ticket-sidebar" class="tickets col-xs-3">
+          <div ng-include src="'<%= asset_path('tickets.html') %>'"></div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
