@@ -1,5 +1,10 @@
 @hashbg_sports.config(['$translateProvider', ($translateProvider) ->
   
+  # Set preferred languange statically to avoid flickering
+  $translateProvider.translations('en_US', 
+    <%= JSON.parse(IO.read("public/i18n/lang-en_US.json")).to_json %>
+  );
+  
   $translateProvider.useStaticFilesLoader({
     prefix: '/i18n/lang-',
     suffix: '.json'
