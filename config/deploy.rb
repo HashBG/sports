@@ -17,6 +17,9 @@ set :branch, "master"
 
 set :sidekiq_env, 'production'
 
+# run the shell login to load rvm, npm, nvm (e.g. for node, bower)
+default_run_options[:shell] = '/bin/bash --login' 
+
 #set :linked_files, %w{config/database.yml config/couchdb.yml}
 
 default_run_options[:pty] = true
@@ -45,7 +48,7 @@ namespace :deploy do
   after "deploy:setup", "deploy:setup_config"
   
   task :bower_install, roles: :app do
-    run("cd #{release_path}; /usr/bin/env rake bower:install RAILS_ENV=#{rails_env}")   
+    run("cd #{release_path}; /usr/bin/env bundle exec rake bower:install RAILS_ENV=#{rails_env}")   
   end
   before 'deploy:assets:precompile', "deploy:bower_install"
 
