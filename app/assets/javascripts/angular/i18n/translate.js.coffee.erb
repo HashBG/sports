@@ -2,7 +2,7 @@
   
   # Set preferred languange statically to avoid flickering
   $translateProvider.translations('en_US', 
-    <%= JSON.parse(IO.read("public/i18n/lang-en_US.json")).to_json %>
+    <%= JSON.parse(IO.read(Rails.root.join("public/i18n/lang-en_US.json"))).to_json %>
   );
   
   $translateProvider.useStaticFilesLoader({

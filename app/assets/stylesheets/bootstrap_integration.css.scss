@@ -16,6 +16,7 @@ $grid-float-breakpoint: 320px;
 $modal-content-bg:  lighten($body-bg, 15%);
 
 @import "bootstrap";
+//@import "bootstrap/theme";
 @import "leagues";
 @import "matches";
 @import "tickets";

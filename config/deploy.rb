@@ -48,7 +48,9 @@ namespace :deploy do
   after "deploy:setup", "deploy:setup_config"
   
   task :bower_install, roles: :app do
-    run("cd #{release_path}; /usr/bin/env bundle exec rake bower:install RAILS_ENV=#{rails_env}")   
+    # it doesn't seem bower-rails works with nvm-npm bower installs
+    #run("cd #{release_path}; /usr/bin/env bundle exec rake bower:install RAILS_ENV=#{rails_env}")
+    run("cd #{release_path}; bower install --force")
   end
   before 'deploy:assets:precompile', "deploy:bower_install"
 
