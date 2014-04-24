@@ -19,7 +19,8 @@
 //= require angular-moment/angular-moment
 //= require angular-flash/dist/angular-flash
 //= require angular-devise/lib/devise
-//= require qrcode/lib/qrcode
+//= require angular-qrcode/qrcode
+//= require qrcode-generator/js/qrcode
 
 
 
