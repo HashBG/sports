@@ -111,13 +111,18 @@ class OddsFeedWorker
   def update_matches(db_name, matches)
     logger.info "updating matches for #{db_name}."
     begin
+      league_with_future_matches = false
       db = CouchRest.database!(couch_admin_host(db_name))
       ensure_read_only_db!(db)
       
       existing_entries = db.all_docs(endkey: "_")["rows"].map{|e|e["id"]}
+
+      current = DateTime.now()
       
       # TODO use bulk update
       matches.each do |match|
+        date = DateTime.parse match[0]
+        league_with_future_matches = true if date > current
         match_id = build_match_id(match)
         begin
           new_doc = build_odds_doc(match)
@@ -132,8 +137,10 @@ class OddsFeedWorker
           logger.error("Could not update match #{match_id}: #{me.message}")
         end
       end
+      league_with_future_matches
     rescue => e
       logger.error("Could not update database #{db_name}: #{e.message}")
+      false
     end
   end
   
@@ -146,10 +153,12 @@ class OddsFeedWorker
           
       odds_feed.each do |league_name, matches|
         db_name = league_name.gsub(/[\ \.\&]/,"_").underscore
-        update_matches(db_name, matches)
+        future_matches = update_matches(db_name, matches)
         
         league_from_feed = leagues_feed[league_name]
         league_from_feed["db_name"] = db_name
+        puts "future matches for #{league_name}: #{future_matches}"
+        league_from_feed["future_matches"] = future_matches
   
         update_doc!(leagues_db, league_name, league_from_feed)
       end
