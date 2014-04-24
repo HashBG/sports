@@ -14,10 +14,7 @@
   
   $http.get("<%= couchdb_league_base %>"+$scope.currentLeague()+"<%= couchdb_league_ext %>").success((data) ->
     $scope.matches = {}
-    
-    data.rows.forEach (result) ->
-      $scope.matches[result.doc["_id"]] = result.doc
-    
+    $scope.updateMatches(data.rows)
     $scope.pollMatches($scope.currentLeague())
   )
      
@@ -46,7 +43,23 @@
       "<%= couchdb_league_base %>"+$scope.currentLeague()+"<%= couchdb_match_changes_since %>" + $scope.lastSeq
     else
       "<%= couchdb_league_base %>"+$scope.currentLeague()+"<%= couchdb_match_changes %>"
+  
+  $scope.countMatches = () ->
+    if $scope.matches
+      Object.keys($scope.matches).length
+    else
+      0
       
+  $scope.updateMatches = (results) ->
+    n = new Date()
+    for result in results
+      start = new Date(result.doc._id.split("/")[0] + "-00:00")
+      if start > n
+        $scope.matches[result.doc["_id"]] = result.doc
+        if result.doc["_id"] is $scope.detailsFor
+          $scope.setDetails result.doc
+      else if $scope.matches[result.doc["_id"]]?
+        $scope.matches[result.doc["_id"]] = null
   
   $scope.pollMatches = (db_name) ->
     if $scope.currentLeague() == null || $scope.currentLeague() != db_name
@@ -58,10 +71,7 @@
       if $scope.currentLeague() == db_name
         if $scope.lastSeq 
           if data.results
-            for result in data.results
-              $scope.matches[result.doc["_id"]] = result.doc
-              if result.doc["_id"] is $scope.detailsFor
-                $scope.setDetails result.doc
+            $scope.updateMatches(data.results)
         if data.last_seq
           $scope.lastSeq = data.last_seq
         $scope.pollMatches(db_name)

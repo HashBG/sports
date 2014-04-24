@@ -164,7 +164,9 @@ class OddsFeedWorker
       begin
         load_feed_and_update_couchdb()
       rescue => e
-        logger.error("Updating couchdb failed: #{e.message}")
+        logger.error "Updating couchdb failed: #{e.message}"
+        logger.error e.backtrace.join("\n")
+        exit 1
       ensure
         mutex.unlock
       end

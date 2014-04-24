@@ -5,5 +5,6 @@
   "en_US":  "English",
   "de_DE":  "German",
   "FAQ_TITLE": "FAQ",
-  "FAQ_BODY": "There are the FAQs for HashBG"
+  "FAQ_BODY": "There are the FAQs for HashBG",
+  "NO_MATCHES": "Currently no matches for this league available"
 }

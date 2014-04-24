@@ -9,6 +9,13 @@
 			<th>more</th>
 		</tr>
 	</thead>
+  <tbody ng-if="countMatches() == 0">
+    <tr>
+      <td class="no-data" colspan=6>
+        {{ 'NO_MATCHES' | translate }}
+      </td>
+    </tr>
+  </tbody>
 	<tbody ng-repeat="(matchKey, match) in matches">
 		<tr>
 			<td class="match-date">
