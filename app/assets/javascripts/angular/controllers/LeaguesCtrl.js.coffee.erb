@@ -4,7 +4,7 @@
   $scope.leaguesMap = {}
   $http.get('<%= couchdb_leagues_url %>').success((data) ->
     for league in data.rows
-      if league.doc.future_matches != false
+      if league.doc.future_matches == true
         $scope.leaguesMap[league.doc.country] or= []
         $scope.leaguesMap[league.doc.country].push league.doc
   ).
