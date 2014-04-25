@@ -1,4 +1,6 @@
 require 'uri'
+require 'yajl/gzip'
+require 'yajl/deflate'
 require 'yajl/http_stream'
 
 module Hashbg
